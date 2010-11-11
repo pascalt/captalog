@@ -1,4 +1,10 @@
 Captalog::Application.routes.draw do
+  resources :departements
+
+  resources :regions do
+    resources :departements    
+  end
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 

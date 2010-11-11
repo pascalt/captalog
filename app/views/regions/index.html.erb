@@ -1,0 +1,21 @@
+<h1>Liste des régions</h1>
+
+<table>
+  <tr>
+    <th>Nom</th>
+    <th>Code</th>
+    <th>Nc</th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @regions.each do |region| %>
+  <tr>
+    <td><%= region.nom %></td>
+    <td><%= region.code %></td>
+    <td><%= region.nc %></td>
+    <td><%= link_to 'Show', region %></td>
+    <td><%= link_to 'Edit', edit_region_path(region) %></td>
+  </tr>
+<% end %>
+</table>
