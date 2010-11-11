@@ -1,5 +1,5 @@
+# coding: utf-8
 class DepartementsController < ApplicationController
-# encoding: utf-8
   def index
     
     # Ajout de @region pour répondre à : GET /regions/:region_id/departements
@@ -23,7 +23,7 @@ class DepartementsController < ApplicationController
     @departement = Departement.find(params[:id])
 
     if @departement.update_attributes(params[:departement])
-      redirect_to(@departement, :notice => "Le departement est bien mis a jour.")
+      redirect_to(@departement, :notice => "Le département a bien été mis à jour.")
     else
       render :action => "edit" 
     end

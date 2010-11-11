@@ -1,3 +1,4 @@
+# coding: utf-8
 class RegionsController < ApplicationController
 
   def index
@@ -16,7 +17,7 @@ class RegionsController < ApplicationController
     @region = Region.find(params[:id])
 
     if @region.update_attributes(params[:region])
-      redirect_to(@region, :notice => 'La region est bien mise a jour.')
+      redirect_to(@region, :notice => 'La région a bien été mise à jour.')
     else
       render :action => "edit"
     end
