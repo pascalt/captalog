@@ -7,6 +7,11 @@
 </p>
 
 <p>
+  <b>Région:</b>
+  <%= @departement.region.nom %>
+</p>
+
+<p>
   <b>Code:</b>
   <%= @departement.code %>
 </p>
@@ -18,5 +23,5 @@
 
 
 
-<%= link_to 'Edit', edit_departement_path(@departement) %> |
-<%= link_to 'Back', departements_path %>
+<%= link_to 'Edit', @region ? edit_region_departement_path(@region, @departement) : edit_departement_path(@departement) %> |
+<%= link_to 'Back', @region ? region_departements_path(@region) : departements_path %>

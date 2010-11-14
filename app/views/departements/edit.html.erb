@@ -2,5 +2,5 @@
 
 <%= render 'form' %>
 
-<%= link_to 'Show', @departement %> |
-<%= link_to 'Back', departements_path %>
+<%= link_to 'Show', [@region, @departement] %> |
+<%= link_to 'Back', @region ? region_departements_path(@region) : departements_path %>

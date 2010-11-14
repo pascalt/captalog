@@ -1,4 +1,4 @@
-# coding: utf-8
+# -*- encoding : utf-8 -*-
 class CreateDepartements < ActiveRecord::Migration
   def self.up
     create_table :departements do |t|

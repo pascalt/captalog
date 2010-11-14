@@ -1,4 +1,4 @@
-# coding: utf-8
+# -*- encoding : utf-8 -*-
 class CreateRegions < ActiveRecord::Migration
   def self.up
     create_table :regions do |t|

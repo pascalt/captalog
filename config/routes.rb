@@ -1,8 +1,9 @@
+# -*- encoding : utf-8 -*-
 Captalog::Application.routes.draw do
-  resources :departements
+  resources :departements, :except => [:destroy, :new, :create] 
 
-  resources :regions do
-    resources :departements    
+  resources :regions, :except => [:destroy, :new, :create] do
+    resources :departements, :except => [:destroy, :new, :create]   
   end
 
   # The priority is based upon order of creation:

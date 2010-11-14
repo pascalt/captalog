@@ -14,8 +14,8 @@
     <td><%= departement.nom %></td>
     <td><%= departement.code %></td>
     <td><%= departement.nc %></td>
-    <td><%= link_to 'Show', departement %></td>
-    <td><%= link_to 'Edit', edit_departement_path(departement) %></td>
+    <td><%= link_to 'Show', [@region, departement] %></td>
+    <td><%= link_to 'Edit', @region ? edit_region_departement_path(@region, departement) : edit_departement_path(departement) %></td>
   </tr>
 <% end %>
 </table>
