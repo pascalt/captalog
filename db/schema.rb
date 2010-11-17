@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -11,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101111144000) do
+ActiveRecord::Schema.define(:version => 20101117131820) do
 
   create_table "departements", :force => true do |t|
     t.integer  "region_id"
@@ -26,6 +25,25 @@ ActiveRecord::Schema.define(:version => 20101111144000) do
     t.string   "nom"
     t.string   "code"
     t.string   "nc"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "villages", :force => true do |t|
+    t.string   "article"
+    t.string   "nom_sa"
+    t.string   "nc"
+    t.string   "longitude"
+    t.string   "latitude"
+    t.integer  "region_id"
+    t.integer  "departement_id"
+    t.string   "type_village"
+    t.string   "rue"
+    t.string   "cp"
+    t.string   "ville"
+    t.boolean  "actif",          :default => true
+    t.datetime "date_entree"
+    t.datetime "date_sortie"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

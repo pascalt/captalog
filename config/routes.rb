@@ -1,6 +1,8 @@
 # -*- encoding : utf-8 -*-
 Captalog::Application.routes.draw do
 
+  resources :villages
+
   match "/menu", :to => "pages#menu"
 
   resources :departements, :except => [:destroy, :new, :create] 

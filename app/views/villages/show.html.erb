@@ -1,0 +1,75 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Article:</b>
+  <%= @village.article %>
+</p>
+
+<p>
+  <b>Nom sa:</b>
+  <%= @village.nom_sa %>
+</p>
+
+<p>
+  <b>Nc:</b>
+  <%= @village.nc %>
+</p>
+
+<p>
+  <b>Longitude:</b>
+  <%= @village.longitude %>
+</p>
+
+<p>
+  <b>Latitude:</b>
+  <%= @village.latitude %>
+</p>
+
+<p>
+  <b>Region:</b>
+  <%= @village.region_id %>
+</p>
+
+<p>
+  <b>Departement:</b>
+  <%= @village.departement_id %>
+</p>
+
+<p>
+  <b>Type village:</b>
+  <%= @village.type_village %>
+</p>
+
+<p>
+  <b>Rue:</b>
+  <%= @village.rue %>
+</p>
+
+<p>
+  <b>Cp:</b>
+  <%= @village.cp %>
+</p>
+
+<p>
+  <b>Ville:</b>
+  <%= @village.ville %>
+</p>
+
+<p>
+  <b>Actif:</b>
+  <%= @village.actif %>
+</p>
+
+<p>
+  <b>Date entree:</b>
+  <%= @village.date_entree %>
+</p>
+
+<p>
+  <b>Date sortie:</b>
+  <%= @village.date_sortie %>
+</p>
+
+
+<%= link_to 'Edit', edit_village_path(@village) %> |
+<%= link_to 'Back', villages_path %>
