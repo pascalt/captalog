@@ -1,0 +1,32 @@
+<h1>Sortie de village</h1>
+
+<%= form_for(@village, :url => { :action => "update_desactive" }) do |f| %>
+  <% if @village.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@village.errors.count, "error") %> prohibited this village from being saved:</h2>
+
+      <ul>
+      <% @village.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.hidden_field :actif %>
+  </div>
+  <div class="field">
+    <%= f.label :date_sortie %><br />
+    <%= f.date_select :date_sortie, :start_year=>Time.now.year - 5, 
+                                    :order => [:day, :month, :year], 
+                                    :default => { :day => Time.now.day, :month => Time.now.month, :year => Time.now.year } %>
+  </div>
+  </div>
+  <div class="actions">
+    <%= f.submit(:value => "Désactiver le village") %>
+  </div>
+<% end %>
+
+<%= link_to 'Retour', villages_path %>
+

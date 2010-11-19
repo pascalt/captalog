@@ -1,0 +1,57 @@
+<% if @village.errors.any? %>
+  <div id="error_explanation">
+    <h2><%= pluralize(@village.errors.count, "error") %> prohibited this village from being saved:</h2>
+
+    <ul>
+    <% @village.errors.full_messages.each do |msg| %>
+      <li><%= msg %></li>
+    <% end %>
+    </ul>
+  </div>
+<% end %>
+
+<div class="field">
+  <%= f.label :article %><br />
+  <%= f.text_field :article %>
+</div>
+<div class="field">
+  <%= f.label :nom_sa %><br />
+  <%= f.text_field :nom_sa %>
+</div>
+<div class="radio_button">
+<%= f.radio_button(:type_village, "mer") %>
+  <%= f.label(:type_village_mer, "Mer") %><br />
+<%= f.radio_button(:type_village, "campagne") %>
+  <%= f.label(:type_village_campagne, "Campagne") %><br />
+<%= f.radio_button(:type_village, "montagne") %>
+  <%= f.label(:type_village_montagne, "Montagne") %><br />
+</div>
+
+<p><b><%=  @village.nom unless @village.new_record?%></b></p>
+<div class="field">
+  <%= f.label :rue %><br />
+  <%= f.text_field :rue %>
+</div>
+<div class="field">
+  <%= f.label :cp %><br />
+  <%= f.text_field :cp %>
+</div>
+<div class="field">
+  <%= f.label :ville %><br />
+  <%= f.text_field :ville %>
+</div>
+  <div class="field">
+  <%= f.label :longitude %><br />
+  <%= f.text_field :longitude %>
+</div>
+<div class="field">
+  <%= f.label :latitude %><br />
+  <%= f.text_field :latitude %>
+</div>
+<div class="field">
+  <%= f.label :date_entree %><br />
+  <%= f.date_select :date_entree, :start_year=>Time.now.year - 30, 
+                                  :order => [:day, :month, :year], 
+                                  :include_blank => true, 
+                                  :default => { :day => "", :month => "", :year => "" } %>
+  </div>

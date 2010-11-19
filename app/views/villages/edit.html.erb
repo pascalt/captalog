@@ -1,6 +1,9 @@
-<h1>Editing village</h1>
-
-<%= render 'form' %>
-
-<%= link_to 'Show', @village %> |
-<%= link_to 'Back', villages_path %>
+<h1>Edition village</h1>
+<%= form_for(@village) do |f| %>
+  <%= render 'champs', :f => f %>
+  <div class="actions">
+     <%= f.submit "Modifier le village"%>
+  </div>
+<% end %>
+<%= link_to 'Voir', @village %> |
+<%= link_to 'Retour', villages_path %>

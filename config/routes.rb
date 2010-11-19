@@ -1,7 +1,10 @@
 # -*- encoding : utf-8 -*-
 Captalog::Application.routes.draw do
 
-  resources :villages
+  resources :villages do
+    get 'desactive', :on => :member
+    put 'update_desactive', :on => :member
+  end
 
   match "/menu", :to => "pages#menu"
 

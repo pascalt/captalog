@@ -1,6 +1,12 @@
 # -*- encoding : utf-8 -*-
 require 'spec_helper'
 
+Factory.define :village do |village|
+  village.article      "Le"
+  village.nom_sa       "Village"
+  village.type_village "mer"
+end
+
 describe Village do
   before(:each) do
     @attr = { :nom_sa => "Exemple de village", :type_village => "mer" }

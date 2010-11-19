@@ -1,11 +1,10 @@
+<%= render 'nav_index' %>
 <h1>Villages Cap France</h1>
-
-<p><%=link_to "Eléments Cap France", "#"%></p>
-
 <table>
   <tr>
     <th>Nom</th>
     <th>Type village</th>
+    <th></th>
     <th></th>
     <th></th>
     <th></th>
@@ -15,13 +14,13 @@
   <tr>
     <td><%= nom_art_parenth(village) %></td>
     <td><%= village.type_village %></td>
-    <td><%= link_to 'voir', village %></td>
-    <td><%= link_to 'éditer', edit_village_path(village) %></td>
-    <td><%= link_to 'suppr.', village, :confirm => 'Are you sure?', :method => :delete %></td>
+    <td><%= link_to 'Voir', village %></td>
+    <td><%= link_to 'Editer', edit_village_path(village) %></td>
+    <td><%= link_to 'Désactiver', desactive_village_path(village) %></td>
+    <td><%= link_to 'Suppr.', village, :confirm => 'Are you sure?', :method => :delete %></td>
   </tr>
 <% end %>
 </table>
 
 <br />
-
-<%= link_to 'Nouveau Village', new_village_path %>
+<%= render 'nav_index' %>

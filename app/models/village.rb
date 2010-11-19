@@ -2,37 +2,17 @@
 
 class Village < ActiveRecord::Base
   
-  attr_accessor :nom
-  
   belongs_to :departement
   
   validates :nom_sa,       :presence => true,
                            :uniqueness => true
   
-  validates :type_village, :inclusion => %w(mer campagne montagne fédé)
-  #validates_inclusion_of :type_village, :in => %w(mer campagne montagne fédé)
+  validates :type_village, :inclusion => %w(mer campagne montagne)
   
-  #Les lignes qui suivent crée un pb de 'missing attribute' problème référencé dans les forum mais difficile à corriger
-  #after_find :reconstruit_nom
-  
-  #def reconstruit_nom
-    #self.nom = self.article.blank? ? self.nom_sa : self.article + " " + self.nom_sa
-  #end
-  
-
-  before_validation :separe_article_et_nom
-  
-  private
-  def separe_article_et_nom
-    #construction de l'article et du nom sans article (nom_sa)
-     unless self.nom.blank?
-      self.nom =~ /(la\s|le\s|les\s|l'\s*)?(.+.*)/i
-      self.article = $1.blank? ? "" : $1.strip
-      self.nom_sa = $2.strip
-    end
-    
+  def nom
+    article.blank? ? nom_sa : article + " " + nom_sa
   end
-  
+    
   scope :reseau, where("id <> ? and actif = ?", 0, true).order("nom_sa")
   
 

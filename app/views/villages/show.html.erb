@@ -1,75 +1,36 @@
 <p id="notice"><%= notice %></p>
 
-<p>
-  <b>Article:</b>
-  <%= @village.article %>
-</p>
+<h1><%= @village.nom %></h1>
+
 
 <p>
-  <b>Nom sa:</b>
-  <%= @village.nom_sa %>
-</p>
-
-<p>
-  <b>Nc:</b>
-  <%= @village.nc %>
-</p>
-
-<p>
-  <b>Longitude:</b>
-  <%= @village.longitude %>
-</p>
-
-<p>
-  <b>Latitude:</b>
-  <%= @village.latitude %>
-</p>
-
-<p>
-  <b>Region:</b>
-  <%= @village.region_id %>
-</p>
-
-<p>
-  <b>Departement:</b>
-  <%= @village.departement_id %>
-</p>
-
-<p>
-  <b>Type village:</b>
+  <b>Type:</b>
   <%= @village.type_village %>
 </p>
 
 <p>
-  <b>Rue:</b>
-  <%= @village.rue %>
+  <b>Adresse:</b><br/>
+  <%= @village.nom %><br/>
+  <%= @village.rue %><br/>
+  <%= @village.cp + " " + @village.ville%><br/>
+</p>
+<p>
+  <b>Coordonnées:</b><br/>
+  Longitude: <%= @village.longitude %> / Latitude: <%= @village.latitude %>
 </p>
 
 <p>
-  <b>Cp:</b>
-  <%= @village.cp %>
+  <b>Date d'entrée:</b>
+  <%= @village.date_entree.strftime('%d/%m/%Y') if @village.date_entree%>
 </p>
 
+<%unless @village.actif%>
 <p>
-  <b>Ville:</b>
-  <%= @village.ville %>
+  <b>Date de sortie:</b>
+  <%= @village.date_sortie.strftime('%d/%m/%Y') if @village.date_sortie%>
 </p>
-
-<p>
-  <b>Actif:</b>
-  <%= @village.actif %>
-</p>
-
-<p>
-  <b>Date entree:</b>
-  <%= @village.date_entree %>
-</p>
-
-<p>
-  <b>Date sortie:</b>
-  <%= @village.date_sortie %>
-</p>
+<%end%>
 
 
-<%= link_to 'Edit', edit_village_path(@village) %> |
-<%= link_to 'Back', villages_path %>
+<%= link_to 'Editer', edit_village_path(@village) %> |
+<%= link_to 'Retour', villages_path %>
