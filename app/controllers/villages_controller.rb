@@ -41,13 +41,13 @@ class VillagesController < ApplicationController
     
   end
 
-  def update
+  def update(desactivation=false)
     
     @village = Village.find(params[:id])
     @titre = "Editer " + @village.nom
 
     if @village.update_attributes(params[:village])
-       redirect_to(@village, :notice => "Le village a bien été modifié.")
+       redirect_to(@village, :notice => "Le village a bien été #{desactivation ? 'désactivé' : 'modifié'}.")
     else
       render :action => "edit"
     end
@@ -70,16 +70,7 @@ class VillagesController < ApplicationController
   end
   
   def update_desactive
-    
-    @village = Village.find(params[:id])
-    @titre = "Désactiver " + @village.nom
-
-    if @village.update_attributes(params[:village])
-      redirect_to(@village, :notice => "Le village a bien été désactivé.")
-    else
-      render :action => "desactive"
-    end
-    
+   update true 
   end
   
   

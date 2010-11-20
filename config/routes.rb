@@ -2,8 +2,10 @@
 Captalog::Application.routes.draw do
 
   resources :villages do
-    get 'desactive', :on => :member
-    put 'update_desactive', :on => :member
+    member do
+      get 'desactive'
+      put 'update_desactive'
+    end
   end
 
   match "/menu", :to => "pages#menu"
