@@ -5,6 +5,8 @@ Factory.define :village do |village|
   village.article      "Le"
   village.nom_sa       "Village"
   village.type_village "mer"
+  village.cp           "14000"
+  village.ville        "Ville"
 end
 
 describe Village do
@@ -30,6 +32,14 @@ describe Village do
   it "doit etre créé 'actif' par défaut" do
     village = Village.create!(@attr)
     village.actif.should be_true
+  end
+  it "doit avoir une date de sortie s'il est désactivé" do
+    village = Village.new(@attr.merge(:actif => false))
+    village.should_not be_valid
+  end
+  it "ne doit pas avoir une date de sortie s'il est actif" do
+    village = Village.new(@attr.merge(:date_sortie => Time.now))
+    village.should_not be_valid
   end
 end
 

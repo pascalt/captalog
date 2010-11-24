@@ -10,13 +10,24 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101117131820) do
+ActiveRecord::Schema.define(:version => 20101123231618) do
 
   create_table "departements", :force => true do |t|
     t.integer  "region_id"
     t.string   "nom"
     t.string   "code"
     t.string   "nc"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "photos", :force => true do |t|
+    t.integer  "village_id"
+    t.string   "nom"
+    t.string   "legende"
+    t.string   "info"
+    t.string   "url_originale"
+    t.boolean  "actif",         :default => true
     t.datetime "created_at"
     t.datetime "updated_at"
   end

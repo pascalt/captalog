@@ -1,7 +1,10 @@
 # -*- encoding : utf-8 -*-
 Captalog::Application.routes.draw do
 
+  resources :photos, :except => [:new, :create] #on refuse le new et le create car une photo ne peut être crée que our un village
+
   resources :villages do
+    resources :photos
     member do
       get 'desactive'
       put 'update_desactive'

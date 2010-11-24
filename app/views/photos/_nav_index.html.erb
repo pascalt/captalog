@@ -1,0 +1,4 @@
+<% unless @village.blank?%>
+  <%= link_to 'Nouvelle photo', new_village_photo_path(@village)%> | 
+<%end%>
+<%= link_to 'Retour', @village ? village_path(@village) : menu_path %>

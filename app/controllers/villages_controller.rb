@@ -31,6 +31,7 @@ class VillagesController < ApplicationController
 
   def create
     
+    @titre = "Nouveau village"
     @village = Village.new(params[:village])
 
     if @village.save
@@ -63,6 +64,10 @@ class VillagesController < ApplicationController
     
   end
   
+  # ========================================
+  # Actions pour la désactivation du village
+  # ========================================
+  
   def desactive
     @village = Village.find(params[:id])
     @village.actif = false
@@ -79,7 +84,6 @@ class VillagesController < ApplicationController
     else
       render :action => "desactive"
     end
-    
     
   end
   

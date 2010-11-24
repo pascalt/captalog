@@ -1,19 +1,27 @@
 # -*- encoding : utf-8 -*-
 
 class Village < ActiveRecord::Base
-  
   belongs_to :departement
+  has_many :photos, :dependent => :destroy
   
-  validates :nom_sa,       :presence => true,
-                           :uniqueness => true
+  validates :nom_sa, :presence => true, :uniqueness => true
   
   validates :type_village, :inclusion => %w(mer campagne montagne)
+  validate  :ne_peut_pas_etre_non_actif_sans_date_de_sortie, :ne_peut_pas_etre_actif_avec_une_date_de_sortie
   
+  def ne_peut_pas_etre_non_actif_sans_date_de_sortie
+    errors.add(:date_sortie, "doit être saisie si désactivé") if !actif && date_sortie.blank?
+  end
+  
+  def ne_peut_pas_etre_actif_avec_une_date_de_sortie
+    errors.add(:date_sortie, "doit être saisie si désactivé") if actif && !date_sortie.blank?
+  end
+
   def nom
     article.blank? ? nom_sa : article + " " + nom_sa
   end
     
-  scope :reseau, where("id <> ? and actif = ?", 0, true).order("nom_sa")
+  scope :reseau, where("actif = ?", true).order("nom_sa")
   
 
 end
