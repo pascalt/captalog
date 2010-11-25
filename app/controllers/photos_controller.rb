@@ -3,7 +3,7 @@ class PhotosController < ApplicationController
 
   def index
     @village = Village.find_by_id(params[:village_id])
-    @photos = @village ? @village.photos : Photo.toutes_actives 
+    @photos = @village ? @village.photos.actives : Photo.actives_de_villages_actifs 
     @titre = @village ? "Photos actives pour : #{@village.nom}" : "Photos actives de la base"
   end
 
@@ -58,4 +58,24 @@ class PhotosController < ApplicationController
     @photo.destroy
     redirect_to(@village ? village_photos_path(@village) : photos_path)
   end
+  
+  
+  # ========================================
+  # Action pour la désactivation de la photo
+  # ========================================
+  
+  def desactive
+    
+    @photo = Photo.find(params[:id])
+    @village = Village.find_by_id(params[:village_id])
+    @photo.actif = false
+
+    if @photo.save
+       redirect_to(@village ? village_photos_path(@village) : photos_path, :notice => "La photo #{@photo.prefix} a bien été désactivé.")
+    else
+      render :action => :index
+    end
+    
+  end
+  
 end

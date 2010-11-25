@@ -1,9 +1,10 @@
 <%= render 'nav_index' %>
-<h1>Villages Cap France</h1>
+<h1><%=@titre%></h1>
 <table>
   <tr>
     <th>Nom</th>
-    <th>Type village</th>
+    <th>Nom court</th>
+    <th>Type</th>
     <th></th>
     <th></th>
     <th></th>
@@ -13,6 +14,7 @@
 <% @villages.each do |village| %>
   <tr>
     <td><%= nom_art_parenth(village) %></td>
+    <td><%= village.nc %></td>
     <td><%= village.type_village %></td>
     <td><%= link_to 'Voir', village %></td>
     <td><%= link_to 'Editer', edit_village_path(village) %></td>

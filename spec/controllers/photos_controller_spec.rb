@@ -41,11 +41,36 @@ describe PhotosController do
       get :index
       response.should have_selector("a", :href => photo_path(@photo), :content => "Voir")
     end
+    it "devrait, pour une photo, avoir un lien pour la désactiver" do
+      @village = Factory(:village)
+      @photo = Photo.create!(:url_originale => "exemple.jpg", :village_id => @village.id)
+      get :index
+      response.should have_selector("a", :href => desactive_photo_path(@photo), :content => "Désactiver")
+    end
     it "devrait, pour une photo, avoir un lien pour la supprimer" do
       @village = Factory(:village)
       @photo = Photo.create!(:url_originale => "exemple.jpg", :village_id => @village.id)
       get :index
       response.should have_selector("a", :href => photo_path(@photo), :content => "Suppr.")
+    end
+    
+    it "ne devrait pas faire apparaitre de photo désactivée" do
+      @village = Factory(:village)
+      @photo = Photo.create!(:url_originale => "exemple.jpg", :village_id => @village.id)
+      @photo.actif = false
+      @photo.save!
+      get :index
+      response.should_not have_selector("td", :content => @photo.prefix)
+    end
+    
+    it "ne devrait pas faire apparaitre de photos de village désactivé" do
+      @village = Factory(:village)
+      @village.actif = false
+      @village.date_sortie = Time.now
+      @village.save!
+      @photo = Photo.create!(:url_originale => "exemple.jpg", :village_id => @village.id)
+      get :index
+      response.should_not have_selector("td", :content => @photo.prefix)
     end
     
   end
@@ -81,12 +106,24 @@ describe PhotosController do
       get :index, :village_id => @village
       response.should have_selector("a", :href => village_photo_path(@village, @photo), :content => "Voir")
     end
+    it "devrait, pour une photo, avoir un lien pour la désactiver" do
+      @photo = Photo.create!(:url_originale => "exemple.jpg", :village_id => @village.id)
+      get :index, :village_id => @village
+      response.should have_selector("a", :href => desactive_village_photo_path(@village, @photo), :content => "Désactiver")
+    end
     it "devrait, pour une photo, avoir un lien pour la supprimer" do
       @photo = Photo.create!(:url_originale => "exemple.jpg", :village_id => @village.id)
       get :index, :village_id => @village
       response.should have_selector("a", :href => village_photo_path(@village, @photo), :content => "Suppr.")
     end
     
+    it "ne devrait pas faire apparaitre de photo désactivée" do
+      @photo = Photo.create!(:url_originale => "exemple.jpg", :village_id => @village.id)
+      @photo.actif = false
+      @photo.save!
+      get :index, :village_id => @village
+      response.should_not have_selector("td", :content => @photo.prefix)
+    end
     
   end
 
@@ -320,5 +357,29 @@ describe PhotosController do
     
   end
   
+  describe "le DESACTIVE" do
+    
+    before(:each) do
+      @village = Factory(:village)
+      attr = {:url_originale => "photo.jpg", :village_id => @village.id }
+      @photo = Photo.create!(attr)
+    end
+    
+    it "devrait désactiver la photo de la liste des photos" do
+      get :desactive, :id => @photo
+      @photo.reload.actif.should be_false
+    end
+    
+    it "devrait rediriger sur la liste photos si pas appelée depuis un village" do
+      get :desactive, :id => @photo
+      response.should redirect_to(photos_path)
+    end
+
+    it "devrait rediriger sur la liste photos si pas appelée depuis un village" do
+      get :desactive, :id => @photo, :village_id => @village.id
+      response.should redirect_to(village_photos_path(@village))
+    end
+      
+  end
 
 end

@@ -1,10 +1,14 @@
 # -*- encoding : utf-8 -*-
 Captalog::Application.routes.draw do
 
-  resources :photos, :except => [:new, :create] #on refuse le new et le create car une photo ne peut être crée que our un village
+  resources :photos, :except => [:new, :create] do
+    get 'desactive', :on => :member
+  end
 
   resources :villages do
-    resources :photos
+    resources :photos do
+      get 'desactive', :on => :member
+    end
     member do
       get 'desactive'
       put 'update_desactive'

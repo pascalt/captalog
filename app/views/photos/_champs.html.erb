@@ -1,0 +1,14 @@
+<%= render 'erreur'%>
+<div class="field">
+<%= f.file_field :url_originale %>
+</div>
+<div class="field">
+  <%= f.label :legende %><br />
+  <%= f.text_field :legende %>
+</div>
+<div class="field">
+  <%= f.label :info %><br />
+  <%= f.text_field :info %>
+</div>
+<%= f.hidden_field :village_id %>
+<%= f.hidden_field :actif %>

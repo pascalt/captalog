@@ -3,7 +3,7 @@ class Photo < ActiveRecord::Base
   belongs_to :village
   
   validates_presence_of :village_id
-  validates :url_originale, :presence => true, :uniqueness => true
+  validates :url_originale, :presence => true  #, :uniqueness => true
   validate  :ne_peut_pas_etre_sans_village_existant
   
   def ne_peut_pas_etre_sans_village_existant
@@ -11,7 +11,8 @@ class Photo < ActiveRecord::Base
   end
 
   
-  scope :toutes_actives, where("actif = ?", true)
+  scope :actives_de_villages_actifs, joins(:village).where("photos.actif = ? and villages.actif = ?", true, true )
+  scope :actives, where("actif = ?", true)
   
   def prefix
     nom_court_village = self.village.nc ? self.village.nc : ""
@@ -20,17 +21,17 @@ class Photo < ActiveRecord::Base
   
 end
 
+
 # == Schema Information
 #
 # Table name: photos
 #
 #  id            :integer(4)      not null, primary key
 #  village_id    :integer(4)
-#  nom           :string(255)
 #  legende       :string(255)
 #  info          :string(255)
 #  url_originale :string(255)
-#  actif         :boolean(1)
+#  actif         :boolean(1)      default(TRUE)
 #  created_at    :datetime
 #  updated_at    :datetime
 #

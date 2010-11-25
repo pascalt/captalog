@@ -87,5 +87,4 @@ class VillagesController < ApplicationController
     
   end
   
-  
 end

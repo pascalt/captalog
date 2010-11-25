@@ -1,14 +1,22 @@
+<h1><%=@titre%></h1>
 <p id="notice"><%= notice %></p>
 
 <p>
   <b>Village:</b>
-  <%= @photo.village_id %>
+  <%= @photo.village.nom %>
 </p>
 
 <p>
-  <b>Nom:</b>
-  <%= @photo.nom %>
+  <b>Préfix:</b>
+  <%= @photo.prefix %>
 </p>
+
+
+<p>
+  <b>Url originale:</b>
+  <%= @photo.url_originale %>
+</p>
+
 
 <p>
   <b>Légende:</b>
@@ -20,10 +28,6 @@
   <%= @photo.info %>
 </p>
 
-<p>
-  <b>Url originale:</b>
-  <%= @photo.url_originale %>
-</p>
 
 <p>
   <b>Actif:</b>

@@ -21,6 +21,14 @@ describe VillagesController do
       get :index
       response.should have_selector("a", :href => menu_path, :content => "Retour")
     end
+    it "ne devrait pas faire apparaitre de village désactivée" do
+      @village = Factory(:village)
+      @village.actif = false
+      @village.date_sortie = Time.now
+      @village.save!
+      get :index
+      response.should_not have_selector("td", :content => @village.nom_sa)
+    end
     
   end
   
