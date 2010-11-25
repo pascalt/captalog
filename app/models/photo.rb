@@ -15,7 +15,7 @@ class Photo < ActiveRecord::Base
   
   def prefix
     nom_court_village = self.village.nc ? self.village.nc : ""
-    "#{nom_court_village}_#{id}"
+    "#{nom_court_village}_#{id.to_s.rjust(5,'0')}"
   end
   
 end

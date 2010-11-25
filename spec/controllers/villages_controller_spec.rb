@@ -105,23 +105,13 @@ describe VillagesController do
       before(:each) do
         @attr = { :nom_sa => "Village Zouzou", :article => "Le", :type_village => "campagne", 
                   :nc => "a", :latitude => "0.12", :longitude => "0.14", :rue => "33bis rue pluf", :ville => "Saint-Charmant",
-                  :cp => "30987", :actif => true, :departement_id => 1, :date_entree => "12/07/1998"}
+                  :cp => "30987", :actif => true, :departement_id => 1, :date_entree => "1998-07-12 00:00:00 UTC"}
       end
       
       it "devrait changer les attributs du village" do
         put :update, :id => @village, :village => @attr
         @village.reload
-        @village.nom_sa.should == @attr[:nom_sa]
-        @village.article.should == @attr[:article]
-        @village.nc.should ==  @attr[:nc]
-        @village.longitude.to_s.should ==  @attr[:longitude]
-        @village.latitude.to_s.should ==  @attr[:latitude]
-        @village.rue.should ==  @attr[:rue]
-        @village.ville.should ==  @attr[:ville]
-        @village.cp.should ==  @attr[:cp]
-        @village.departement_id.should ==  @attr[:departement_id]
-        @village.actif.should ==  @attr[:actif]
-        @village.date_entree.strftime('%d/%m/%Y').should ==  @attr[:date_entree]
+        @attr.keys.each { |cle| @village[cle].to_s.should == @attr[cle].to_s }
       end
       
       it "devrait etre redirigé sur le 'show'" do
@@ -165,23 +155,13 @@ describe VillagesController do
       before(:each) do
         @attr = { :nom_sa => "Village Zouzou", :article => "Le", :type_village => "campagne", 
                   :nc => "a", :latitude => "0.12", :longitude => "0.14", :rue => "33bis rue pluf", :ville => "Saint-Charmant",
-                  :cp => "30987", :actif => true, :departement_id => 1, :date_entree => "12/07/1998"}
+                  :cp => "30987", :actif => true, :departement_id => 1, :date_entree => "1998-07-12 00:00:00 UTC"}
       end
-      
+
       it "devrait avoir les attributs passés" do
         post :create, :village => @attr
         @village = Village.find_by_nom_sa(@attr[:nom_sa])
-        @village.nom_sa.should == @attr[:nom_sa]
-        @village.article.should == @attr[:article]
-        @village.nc.should ==  @attr[:nc]
-        @village.longitude.to_s.should ==  @attr[:longitude]
-        @village.latitude.to_s.should ==  @attr[:latitude]
-        @village.rue.should ==  @attr[:rue]
-        @village.ville.should ==  @attr[:ville]
-        @village.cp.should ==  @attr[:cp]
-        @village.departement_id.should ==  @attr[:departement_id]
-        @village.actif.should ==  @attr[:actif]
-        @village.date_entree.strftime('%d/%m/%Y').should ==  @attr[:date_entree]
+        @attr.keys.each { |cle| @village[cle].to_s.should == @attr[cle].to_s }
       end
       
       it "devrait etre redirigé sur le 'show'" do

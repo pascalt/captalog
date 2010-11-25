@@ -214,9 +214,7 @@ describe PhotosController do
       it "devrait avoir les attributs passés" do
         post :create, :photo => @attr, :village_id => @village.id
         @photo = Photo.find_by_url_originale(@attr[:url_originale])
-        @photo.url_originale.should == @attr[:url_originale]
-        @photo.village_id.should ==  @attr[:village_id]
-        @photo.actif.should ==  @attr[:actif]
+        @attr.keys.each { |cle| @photo[cle].to_s.should == @attr[cle].to_s }
       end
       
       it "devrait etre redirigé sur le 'show'" do
@@ -269,8 +267,7 @@ describe PhotosController do
       it "devrait changer les attributs de la photo" do
         put :update, :id => @photo, :photo => @attr
         @photo.reload
-        @photo.url_originale.should == @attr[:url_originale]
-        @photo.actif.should ==  @attr[:actif]
+        @attr.keys.each { |cle| @photo[cle].to_s.should == @attr[cle].to_s }
       end
       
       it "devrait etre redirigé sur le 'show' du village si éditée d'un village" do

@@ -14,7 +14,7 @@ class Village < ActiveRecord::Base
   end
   
   def ne_peut_pas_etre_actif_avec_une_date_de_sortie
-    errors.add(:date_sortie, "doit être saisie si désactivé") if actif && !date_sortie.blank?
+    errors.add(:date_sortie, "ne peut pas etre rentrée si village actif") if actif && !date_sortie.blank?
   end
 
   def nom
