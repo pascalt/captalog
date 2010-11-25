@@ -5,6 +5,7 @@ class PhotosController < ApplicationController
     @village = Village.find_by_id(params[:village_id])
     @photos = @village ? @village.photos.actives : Photo.actives_de_villages_actifs 
     @titre = @village ? "Photos actives pour : #{@village.nom}" : "Photos actives de la base"
+    @existe_photos_nonactives = @village ? @village.photos.nonactives.any? : Photo.nonactives_de_villages_actifs.any?
   end
 
   def show
@@ -61,21 +62,27 @@ class PhotosController < ApplicationController
   
   
   # ========================================
-  # Action pour la désactivation de la photo
+  # Action pour la désactivation/réactivation (active_bascule) de la photo
   # ========================================
   
-  def desactive
+  def active_bascule
     
     @photo = Photo.find(params[:id])
     @village = Village.find_by_id(params[:village_id])
-    @photo.actif = false
+    @photo.actif = !@photo.actif
 
     if @photo.save
-       redirect_to(@village ? village_photos_path(@village) : photos_path, :notice => "La photo #{@photo.prefix} a bien été désactivé.")
+       redirect_to(@village ? village_photos_path(@village) : photos_path, 
+                   :notice => "La photo #{@photo.prefix} a bien été #{@photo.actif ? "ré" : "dés"}activée.")
     else
       render :action => :index
     end
     
   end
   
+  def indexnonactive
+    @village = Village.find_by_id(params[:village_id])
+    @photos = @village ? @village.photos.nonactives : Photo.nonactives_de_villages_actifs 
+    @titre = @village ? "Photos désactivées pour : #{@village.nom}" : "Photos désactivées de la base"
+  end
 end

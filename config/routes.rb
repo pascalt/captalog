@@ -2,12 +2,23 @@
 Captalog::Application.routes.draw do
 
   resources :photos, :except => [:new, :create] do
-    get 'desactive', :on => :member
+    collection do
+      get 'indexnonactive'
+    end
+
+    member do
+      get 'active_bascule'
+    end
   end
 
   resources :villages do
     resources :photos do
-      get 'desactive', :on => :member
+      member do
+        get 'active_bascule'
+      end
+      collection do
+        get 'indexnonactive'
+      end
     end
     member do
       get 'desactive'
@@ -16,6 +27,7 @@ Captalog::Application.routes.draw do
   end
 
   match "/menu", :to => "pages#menu"
+  match "/admin", :to => "pages#admin"
 
   resources :departements, :except => [:destroy, :new, :create] 
 

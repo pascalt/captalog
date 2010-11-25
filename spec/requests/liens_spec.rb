@@ -16,6 +16,16 @@ describe "Liens" do
       response.should have_selector("title", :content => @titre_de_base + " | Menu")
     end
   end
+  describe "GET 'administration'" do
+    it "devrait réussir" do
+      get 'admin'
+      response.should be_success
+    end
+    it "devrait avoir le bon titre" do
+      get 'admin'
+      response.should have_selector("title", :content => @titre_de_base + " | Administration")
+    end
+  end
   
  
 end

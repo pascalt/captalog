@@ -1,4 +1,4 @@
-<%= render 'nav_index' %>
+<%= render 'nav_indexnonactive' %>
 <p id="notice"><%= notice %></p>
 <h1><%=@titre%></h1>
 
@@ -11,8 +11,6 @@
     <th>Info</th>
     <th></th>
     <th></th>
-    <th></th>
-    <th></th>
   </tr>
 
 <% @photos.each do |photo| %>
@@ -22,14 +20,12 @@
     <td><%= photo.url_originale %></td>
     <td><%= photo.legende %></td>
     <td><%= photo.info %></td>
-    <td><%= link_to 'Voir', [@village, photo] %></td>
-    <td><%= link_to 'Editer', @village ? edit_village_photo_path(@village, photo) : edit_photo_path(photo) %></td>
-    <td><%= link_to 'Désactiver', @village ? active_bascule_village_photo_path(@village,photo) : active_bascule_photo_path(photo) %></td>
+    <td><%= link_to 'Réactiver', @village ? active_bascule_village_photo_path(@village,photo) : active_bascule_photo_path(photo) %></td>
     <td><%= link_to 'Suppr.', [@village, photo], :confirm => 'Etes-vous certain ?', :method => :delete %></td>
   </tr>
 <% end %>
 </table>
 
 <br />
-<%= render 'nav_index' %>
+<%= render 'nav_indexnonactive' %>
 
