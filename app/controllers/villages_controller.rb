@@ -4,7 +4,7 @@ class VillagesController < ApplicationController
   def index
     
     @titre = "Villages Cap France"
-    @villages = Village.reseau
+    @villages = Village.actifs
     
   end
 
@@ -65,7 +65,7 @@ class VillagesController < ApplicationController
   end
   
   # ========================================
-  # Actions pour la désactivation du village
+  # Actions pour la désactivation/réactivation du village
   # ========================================
   
   def desactive
@@ -80,17 +80,28 @@ class VillagesController < ApplicationController
     @titre = "Désactiver " + @village.nom
 
     if @village.update_attributes(params[:village])
-       redirect_to(@village, :notice => "Le village a bien été désactivé.")
+       redirect_to(@village, :notice => "#{@village.nom} a bien été désactivé.")
     else
       render :action => "desactive"
     end
     
   end
   
-  def indexnonactif
-    @villages = Village.nonactifs
+  def index_non_actifs
+    @villages = Village.non_actifs
     @titre = "Villages désactivés"
   end
   
+  def reactive
+    @village = Village.find(params[:id])
+    @village.actif = true
+    @village.date_sortie = nil
+    if @village.save
+       redirect_to(@village, :notice => "#{@village.nom} a bien été réactivé.")
+    else
+      render :action => "index_non_actifs", :notice => "#{@village.nom} n'a pas pu être réactivé."
+    end
+    
+  end
   
 end

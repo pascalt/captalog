@@ -31,13 +31,13 @@ describe PhotosController do
       @photo.actif = false
       @photo.save!
       get :index
-      response.should have_selector("a", :href => indexnonactive_photos_path, :content => "Photos désactivées")
+      response.should have_selector("a", :href => index_non_actives_photos_path, :content => "Photos désactivées")
     end
     it "s'il n'existe pas de photo non active, alors ne doit pas avoir un lien vers la liste des photos désactivées" do
       @village = Factory(:village)
       @photo = Photo.create!(:url_originale => "exemple.jpg", :village_id => @village.id)
       get :index
-      response.should_not have_selector("a", :href => indexnonactive_photos_path, :content => "Photos désactivées")
+      response.should_not have_selector("a", :href => index_non_actives_photos_path, :content => "Photos désactivées")
     end
     it "devrait, pour une photo, avoir un lien pour son édition" do
       @village = Factory(:village)
@@ -56,12 +56,6 @@ describe PhotosController do
       @photo = Photo.create!(:url_originale => "exemple.jpg", :village_id => @village.id)
       get :index
       response.should have_selector("a", :href => active_bascule_photo_path(@photo), :content => "Désactiver")
-    end
-    it "devrait, pour une photo, avoir un lien pour la supprimer" do
-      @village = Factory(:village)
-      @photo = Photo.create!(:url_originale => "exemple.jpg", :village_id => @village.id)
-      get :index
-      response.should have_selector("a", :href => photo_path(@photo), :content => "Suppr.")
     end
     
     it "ne devrait pas faire apparaitre de photo désactivée" do
@@ -111,12 +105,12 @@ describe PhotosController do
       @photo.actif = false
       @photo.save!
       get :index, :village_id => @village
-      response.should have_selector("a", :href => indexnonactive_village_photos_path(@village), :content => "Photos désactivées")
+      response.should have_selector("a", :href => index_non_actives_village_photos_path(@village), :content => "Photos désactivées")
     end
     it "s'il n'existe pas une photo non active, alors ne doit pas avoir un lien vers la liste des photos désactivées" do
       @photo = Photo.create!(:url_originale => "exemple.jpg", :village_id => @village.id)
       get :index, :village_id => @village
-      response.should_not have_selector("a", :href => indexnonactive_village_photos_path(@village), :content => "Photos désactivées")
+      response.should_not have_selector("a", :href => index_non_actives_village_photos_path(@village), :content => "Photos désactivées")
     end
     it "devrait, pour une photo, avoir un lien pour son édition" do
       @photo = Photo.create!(:url_originale => "exemple.jpg", :village_id => @village.id)
@@ -132,11 +126,6 @@ describe PhotosController do
       @photo = Photo.create!(:url_originale => "exemple.jpg", :village_id => @village.id)
       get :index, :village_id => @village
       response.should have_selector("a", :href => active_bascule_village_photo_path(@village, @photo), :content => "Désactiver")
-    end
-    it "devrait, pour une photo, avoir un lien pour la supprimer" do
-      @photo = Photo.create!(:url_originale => "exemple.jpg", :village_id => @village.id)
-      get :index, :village_id => @village
-      response.should have_selector("a", :href => village_photo_path(@village, @photo), :content => "Suppr.")
     end
     
     it "ne devrait pas faire apparaitre de photo désactivée" do
@@ -428,41 +417,57 @@ describe PhotosController do
     end
   end
   
-  describe "le INDEXNONACTIVE de toutes les photos de la base" do
+  describe "le INDEX_NON_ACTIVES de toutes les photos de la base" do
     
     it "devrait réussir" do
-      get :indexnonactive
+      get :index_non_actives
       response.should be_success
     end
     it "devrait avoir le bon titre" do
-      get :indexnonactive
+      get :index_non_actives
       response.should have_selector("title", :content => @titre_de_base + " | Photos désactivées de la base")
     end
     it "devrait avoir un retour vers la liste des photos actives" do
-      get :indexnonactive
+      get :index_non_actives
       response.should have_selector("a", :href => photos_path, :content => "Retour")
     end
+    it "devrait, pour une photo, avoir un lien pour la supprimer" do
+      @village = Factory(:village)
+      @photo = Photo.create!(:url_originale => "exemple.jpg", :village_id => @village.id)
+      @photo.actif = false
+      @photo.save!
+      get :index_non_actives
+      response.should have_selector("a", :href => photo_path(@photo), :content => "Suppr.")
+    end
+    
         
   end
-  describe "le INDEXNONACTIVE des photos d'un village" do
+  describe "le INDEX_NON_ACTIVES des photos d'un village" do
     
     before(:each) do
       @village = Factory(:village)
     end
     
     it "devrait réussir" do
-      get :indexnonactive, :village_id => @village.id
+      get :index_non_actives, :village_id => @village.id
       response.should be_success
     end
     it "devrait avoir le bon titre" do
-      get :indexnonactive, :village_id => @village.id
+      get :index_non_actives, :village_id => @village.id
       response.should have_selector("title", :content => @titre_de_base + " | Photos désactivées pour : #{@village.nom}")
     end
     it "devrait avoir un retour vers la liste des photos actives" do
-      get :indexnonactive, :village_id => @village.id
+      get :index_non_actives, :village_id => @village.id
       response.should have_selector("a", :href => village_photos_path(@village), :content => "Retour")
     end
-        
+    it "devrait, pour une photo, avoir un lien pour la supprimer" do
+      @photo = Photo.create!(:url_originale => "exemple.jpg", :village_id => @village.id)
+      @photo.actif = false
+      @photo.save!
+      get :index_non_actives, :village_id => @village
+      response.should have_selector("a", :href => village_photo_path(@village, @photo), :content => "Suppr.")
+    end
+    
   end
   
   

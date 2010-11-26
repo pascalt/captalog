@@ -1,7 +1,8 @@
 <% unless @village.blank?%>
   <%= link_to 'Nouvelle photo', new_village_photo_path(@village)%> | 
 <%end%>
-<%if @existe_photos_nonactives%>
-  <%= link_to 'Photos désactivées', @village ? indexnonactive_village_photos_path(@village) : indexnonactive_photos_path%> | 
-<%end%>
 <%= link_to 'Retour', @village ? village_path(@village) : menu_path %>
+<%if @existe_photos_non_actives%>
+   | <%= link_to 'Photos désactivées', @village ? index_non_actives_village_photos_path(@village) : index_non_actives_photos_path%>
+<%end%>
+

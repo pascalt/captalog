@@ -29,6 +29,19 @@ describe VillagesController do
       get :index
       response.should_not have_selector("td", :content => @village.nom_sa)
     end
+    it "s'il existe au moins un village non actif, alors doit avoir un lien vers la liste des villages désactivés" do
+      @village = Factory(:village)
+      @village.actif = false
+      @village.date_sortie = Time.now
+      @village.save!
+      get :index
+      response.should have_selector("a", :href => index_non_actifs_villages_path, :content => "Villages désactivés")
+    end
+    it "s'il n'existe pas de village non actif, alors ne doit pas avoir un lien vers la liste des villages désactivés" do
+      @village = Factory(:village)
+      get :index
+      response.should_not have_selector("a", :href => index_non_actifs_villages_path, :content => "Villages désactivés")
+    end
     
   end
   
@@ -267,18 +280,18 @@ describe VillagesController do
 
   end
 
-  describe "le INDEXNONACTIVE" do
+  describe "le INDEX_NON_ACTIFS" do
     
     it "devrait réussir" do
-      get :indexnonactif
+      get :index_non_actifs
       response.should be_success
     end
     it "devrait avoir le bon titre" do
-      get :indexnonactif
+      get :index_non_actifs
       response.should have_selector("title", :content => @titre_de_base + " | Villages désactivés")
     end
     it "devrait avoir un retour vers la liste des villages actifs" do
-      get :indexnonactif
+      get :index_non_actifs
       response.should have_selector("a", :href => villages_path, :content => "Retour")
     end
         

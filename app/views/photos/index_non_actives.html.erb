@@ -1,4 +1,4 @@
-<%= render 'nav_indexnonactive' %>
+<%= render 'nav_index_non_actives' %>
 <p id="notice"><%= notice %></p>
 <h1><%=@titre%></h1>
 
@@ -21,11 +21,12 @@
     <td><%= photo.legende %></td>
     <td><%= photo.info %></td>
     <td><%= link_to 'Réactiver', @village ? active_bascule_village_photo_path(@village,photo) : active_bascule_photo_path(photo) %></td>
-    <td><%= link_to 'Suppr.', [@village, photo], :confirm => 'Etes-vous certain ?', :method => :delete %></td>
+    <td><%= link_to 'Suppr.', [@village, photo], :confirm => "Etes-vous certain de vouloir supprimer la photo : #{photo.prefix}?", 
+                                                 :method => :delete %></td>
   </tr>
 <% end %>
 </table>
 
 <br />
-<%= render 'nav_indexnonactive' %>
+<%= render 'nav_index_non_actives' %>
 

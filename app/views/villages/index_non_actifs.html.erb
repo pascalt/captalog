@@ -1,4 +1,4 @@
-<%= render 'nav_index' %>
+<%= render 'nav_index_non_actifs' %>
 <h1><%=@titre%></h1>
 <table>
   <tr>
@@ -18,10 +18,12 @@
     <td><%= village.type_village %></td>
     <td><%= link_to 'Voir', village %></td>
     <td><%= link_to 'Editer', edit_village_path(village) %></td>
-    <td><%= link_to 'Désactiver', desactive_village_path(village) %></td>
+    <td><%= link_to 'Réactiver', reactive_village_path(village) %></td>
+    <td><%= link_to 'Suppr.', village, :confirm => "Etes-vous certain de vouloir supprimer #{village.nom} et ses photos associées ?", 
+                                                 :method => :delete %></td>
   </tr>
 <% end %>
 </table>
 
 <br />
-<%= render 'nav_index' %>
+<%= render 'nav_index_non_actifs' %>

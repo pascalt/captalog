@@ -3,7 +3,7 @@ Captalog::Application.routes.draw do
 
   resources :photos, :except => [:new, :create] do
     collection do
-      get 'indexnonactive'
+      get 'index_non_actives'
     end
 
     member do
@@ -18,16 +18,17 @@ Captalog::Application.routes.draw do
         get 'active_bascule'
       end
       collection do
-        get 'indexnonactive'
+        get 'index_non_actives'
       end
     end
     
     collection do
-      get 'indexnonactif'
+      get 'index_non_actifs'
     end
     
     member do
       get 'desactive'
+      get 'reactive'
       put 'update_desactive'
     end
     

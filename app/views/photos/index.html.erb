@@ -25,7 +25,6 @@
     <td><%= link_to 'Voir', [@village, photo] %></td>
     <td><%= link_to 'Editer', @village ? edit_village_photo_path(@village, photo) : edit_photo_path(photo) %></td>
     <td><%= link_to 'Désactiver', @village ? active_bascule_village_photo_path(@village,photo) : active_bascule_photo_path(photo) %></td>
-    <td><%= link_to 'Suppr.', [@village, photo], :confirm => 'Etes-vous certain ?', :method => :delete %></td>
   </tr>
 <% end %>
 </table>

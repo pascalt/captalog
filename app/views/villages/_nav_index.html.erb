@@ -1,2 +1,6 @@
 <%= link_to 'Nouveau Village', new_village_path %> | 
 <%= link_to 'Retour', menu_path %>
+<%if Village.non_actifs.any? %>
+   | <%= link_to 'Villages désactivés', index_non_actifs_villages_path%>
+<%end%>
+

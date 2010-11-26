@@ -21,8 +21,8 @@ class Village < ActiveRecord::Base
     article.blank? ? nom_sa : article + " " + nom_sa
   end
     
-  scope :reseau, where("actif = ?", true).order("nom_sa")
-  scope :nonactifs, where("actif = ?", false).order("nom_sa")
+  scope :actifs, where("actif = ?", true).order("nom_sa")
+  scope :non_actifs, where("actif = ?", false).order("nom_sa")
   
 
 end

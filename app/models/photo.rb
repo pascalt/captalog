@@ -12,9 +12,9 @@ class Photo < ActiveRecord::Base
 
   
   scope :actives_de_villages_actifs, joins(:village).where("photos.actif = ? and villages.actif = ?", true, true )
-  scope :nonactives_de_villages_actifs, joins(:village).where("photos.actif = ? and villages.actif = ?", false, true )
+  scope :non_actives_de_villages_actifs, joins(:village).where("photos.actif = ? and villages.actif = ?", false, true )
   scope :actives, where("actif = ?", true)
-  scope :nonactives, where("actif = ?", false)
+  scope :non_actives, where("actif = ?", false)
   
   def prefix
     nom_court_village = self.village.nc ? self.village.nc : ""
