@@ -87,4 +87,10 @@ class VillagesController < ApplicationController
     
   end
   
+  def indexnonactif
+    @villages = Village.nonactifs
+    @titre = "Villages désactivés"
+  end
+  
+  
 end

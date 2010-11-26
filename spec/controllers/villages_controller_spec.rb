@@ -267,6 +267,21 @@ describe VillagesController do
 
   end
 
-
+  describe "le INDEXNONACTIVE" do
+    
+    it "devrait réussir" do
+      get :indexnonactif
+      response.should be_success
+    end
+    it "devrait avoir le bon titre" do
+      get :indexnonactif
+      response.should have_selector("title", :content => @titre_de_base + " | Villages désactivés")
+    end
+    it "devrait avoir un retour vers la liste des villages actifs" do
+      get :indexnonactif
+      response.should have_selector("a", :href => villages_path, :content => "Retour")
+    end
+        
+  end
   
 end

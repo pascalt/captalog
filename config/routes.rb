@@ -12,6 +12,7 @@ Captalog::Application.routes.draw do
   end
 
   resources :villages do
+    
     resources :photos do
       member do
         get 'active_bascule'
@@ -20,10 +21,16 @@ Captalog::Application.routes.draw do
         get 'indexnonactive'
       end
     end
+    
+    collection do
+      get 'indexnonactif'
+    end
+    
     member do
       get 'desactive'
       put 'update_desactive'
     end
+    
   end
 
   match "/menu", :to => "pages#menu"

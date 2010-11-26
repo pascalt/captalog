@@ -22,6 +22,7 @@ class Village < ActiveRecord::Base
   end
     
   scope :reseau, where("actif = ?", true).order("nom_sa")
+  scope :nonactifs, where("actif = ?", false).order("nom_sa")
   
 
 end
