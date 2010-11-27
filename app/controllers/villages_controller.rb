@@ -35,6 +35,7 @@ class VillagesController < ApplicationController
     @village = Village.new(params[:village])
 
     if @village.save
+      @village.cree_dir if Rails.env.development? || Rails.env.production?
       redirect_to(@village, :notice => 'Le village a bien été créé.')
     else
       render :action => "new"
@@ -99,7 +100,46 @@ class VillagesController < ApplicationController
     if @village.save
        redirect_to(@village, :notice => "#{@village.nom} a bien été réactivé.")
     else
-      render :action => "index_non_actifs", :notice => "#{@village.nom} n'a pas pu être réactivé."
+      flash[:notice] = "#{@village.nom} n'a pas pu être réactivé."
+      render :action => "index_non_actifs"
+    end
+    
+  end
+  
+  def init_elements
+
+    @village = Village.find(params[:id])
+    
+    # à mins que le répertoire 'nc' n'existe déjà, on initialise le nc
+    unless @village.dir_existe
+      @village.init_nc
+      @titre = "Initialise les éléments pour : " + @village.nom
+    else
+      flash[:notice] = "Le repertoire [#{@village.nc}] existe déjà pour #{@village.nom}."
+      render :action => "show"
+    end
+  end
+  
+  def update_init_elements
+    
+    # on récupère les paramètre de la vue, notamment le 'nc' qui sera le nom du répertoire
+    @village = Village.find(params[:id])
+    @titre = "Initialise les éléments pour : " + @village.nom
+    @village.nc = params[:village][:nc]
+    
+    # si le répertoire 'nc' n'existe pas, on l'enregistre et on crée le répertoire
+    if !@village.dir_existe 
+      if @village.save
+        @village.cree_dir if Rails.env.development? || Rails.env.production?
+        redirect_to(@village, :notice => "Les éléments pour #{@village.nom} ont bien été initialisés.")
+      else
+        flash[:notice] = "Problème d'enregistrement pour #{@village.nom}."
+        render :action => "init_elements"
+      end
+    # sinon on retourne à la saise du 'nc'
+    else
+      flash[:notice] = "Le repertoire [#{@village.nc}] existe déjà pour #{@village.nom}."
+      render :action => "init_elements"
     end
     
   end

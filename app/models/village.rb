@@ -17,13 +17,44 @@ class Village < ActiveRecord::Base
     errors.add(:date_sortie, "ne peut pas etre rentrée si village actif") if actif && !date_sortie.blank?
   end
 
-  def nom
-    article.blank? ? nom_sa : article + " " + nom_sa
-  end
-    
   scope :actifs, where("actif = ?", true).order("nom_sa")
   scope :non_actifs, where("actif = ?", false).order("nom_sa")
   
+  def nom
+    # le nom du village est formé par l'article et son nom sans article
+    article.blank? ? nom_sa : article + " " + nom_sa
+  end
+    
+  def nc_est_valide
+    # le nom court est valide s'il n'est pas blanc 
+    # et qu'il ne contient rien d'autre que des lettre minuscules (a-z) ou des tirets
+    !nc.blank? && !(nc  =~ /[^a-z\-]/)
+  end
+  
+  def init_nc
+    # à moins que le nom court soit valide, on crée un nom court valide
+    # en mettant tout en minuscule, en retirant les accents et retirant les caractères non alphabétiques (sauf le tiret)
+    unless nc_est_valide
+       self.nc = nom_sa.downcase.
+            gsub(/[àâãäå]/,'a').gsub(/æ/,'ae').
+            gsub(/ç/, 'c').gsub(/[èéêë]/,'e').
+            gsub(/[ïî]/,'i').gsub(/[öô]/,'o').
+            gsub(/[üùû]/,'u').gsub(/[ñ]/,'n').gsub(/[^a-z\-]/,'')
+    end
+  end
+  
+  def dir_existe
+    Dir.entries("public/elements").include?(nc)
+  end
+  
+  def cree_dir
+    # si le nom court est valide et que le répertoire n'existe pas, on crée un répertoire du même nom dans public/elements/.
+    if nc_est_valide && !dir_existe
+      Dir.chdir("public/elements/")
+      Dir.mkdir(nc)
+      Dir.chdir("../..")
+    end
+  end
 
 end
 

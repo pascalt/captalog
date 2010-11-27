@@ -1,5 +1,4 @@
 <h1><%=@titre%></h1>
-<p id="notice"><%= notice %></p>
 
 <p>
   <b>Village:</b>
@@ -15,6 +14,8 @@
 <p>
   <b>Url originale:</b>
   <%= @photo.url_originale %>
+  <%= image_tag("/images/originales/#{@photo.url_originale}") %>
+  
 </p>
 
 

@@ -1,0 +1,16 @@
+<h1><%=@titre%></h1>
+
+<%= form_for(@village, :url => { :action => 'update_init_elements'  }) do |f| %>
+  <%= render 'erreur'%>
+  Nom court :
+  <div class="field">
+    <%= f.text_field :nc %>
+  </div>
+  </div>
+  <div class="actions">
+    <%= f.submit(:value => "Créer le répertoire") %>
+  </div>
+<% end %>
+
+<%= link_to 'Retour', villages_path %>
+

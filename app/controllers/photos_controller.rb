@@ -33,7 +33,7 @@ class PhotosController < ApplicationController
     @titre = "Nouvelle photo pour : " + @village.nom
 
     if @photo.save
-      redirect_to([@village, @photo], :notice => 'La photo a bien été créée.')
+       redirect_to([@village, @photo], :notice => 'La photo a bien été créée.')
     else
       render :new
     end

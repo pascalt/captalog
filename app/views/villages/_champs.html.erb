@@ -7,10 +7,16 @@
   <%= f.label :nom_sa %><br />
   <%= f.text_field :nom_sa %>
 </div>
-<div class="field">
-  Nom court<br />
-  <%= f.text_field :nc %>
-</div>
+
+  <% if @village.dir_existe%>
+    Nom court: <b><%=@village.nc%></b  >
+  <%else%>
+    <div class="field">
+      Nom court<br />
+      <%= f.text_field :nc %>
+    </div>
+  <%end%>
+
 <div class="radio_button">
 <%= f.radio_button(:type_village, "mer") %>
   <%= f.label(:type_village_mer, "Mer") %><br />
@@ -19,20 +25,22 @@
 <%= f.radio_button(:type_village, "montagne") %>
   <%= f.label(:type_village_montagne, "Montagne") %><br />
 </div>
-
-<p><b><%=  @village.nom unless @village.new_record?%></b></p>
-<div class="field">
-  <%= f.label :rue %><br />
-  <%= f.text_field :rue %>
-</div>
-<div class="field">
-  <%= f.label :cp %><br />
-  <%= f.text_field :cp %>
-</div>
-<div class="field">
-  <%= f.label :ville %><br />
-  <%= f.text_field :ville %>
-</div>
+<p>
+  <b>Adresse:</b><br />
+  <%=  @village.nom unless @village.new_record?%>
+  <div class="field">
+    <%= f.label :rue %><br />
+    <%= f.text_field :rue %>
+  </div>
+  <div class="field">
+    <%= f.label :cp %><br />
+    <%= f.text_field :cp %>
+  </div>
+  <div class="field">
+    <%= f.label :ville %><br />
+    <%= f.text_field :ville %>
+  </div>
+</p>
   <div class="field">
   <%= f.label :longitude %><br />
   <%= f.text_field :longitude %>
