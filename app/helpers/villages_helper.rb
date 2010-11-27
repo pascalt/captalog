@@ -7,7 +7,7 @@ module VillagesHelper
   end
   
   def nc_ayant_un_repertoire(village)
-    "[#{village.nc}]"
+    "[#{village.dir_nom}]"
   end
   
 end

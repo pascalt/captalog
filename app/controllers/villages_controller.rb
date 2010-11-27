@@ -36,7 +36,7 @@ class VillagesController < ApplicationController
 
     if @village.save
       @village.cree_dir if Rails.env.development? || Rails.env.production?
-      redirect_to(@village, :notice => 'Le village a bien été créé.')
+      redirect_to(@village, :notice => "Le village a bien été créé#{@village.dir_existe ? ", ainsi que ses répertoires" : "."}")
     else
       render :action => "new"
     end
@@ -106,40 +106,40 @@ class VillagesController < ApplicationController
     
   end
   
-  def init_elements
+  def init_repertoires
 
     @village = Village.find(params[:id])
     
     # à mins que le répertoire 'nc' n'existe déjà, on initialise le nc
     unless @village.dir_existe
       @village.init_nc
-      @titre = "Initialise les éléments pour : " + @village.nom
+      @titre = "Initialise les répertoires pour : " + @village.nom
     else
-      flash[:notice] = "Le repertoire [#{@village.nc}] existe déjà pour #{@village.nom}."
+      flash[:notice] = "un répertoire existe déjà pour #{@village.nom}."
       render :action => "show"
     end
   end
   
-  def update_init_elements
+  def update_init_repertoires
     
     # on récupère les paramètre de la vue, notamment le 'nc' qui sera le nom du répertoire
     @village = Village.find(params[:id])
-    @titre = "Initialise les éléments pour : " + @village.nom
+    @titre = "Initialise les répertoires pour : " + @village.nom
     @village.nc = params[:village][:nc]
     
     # si le répertoire 'nc' n'existe pas, on l'enregistre et on crée le répertoire
     if !@village.dir_existe 
       if @village.save
         @village.cree_dir if Rails.env.development? || Rails.env.production?
-        redirect_to(@village, :notice => "Les éléments pour #{@village.nom} ont bien été initialisés.")
+        redirect_to(@village, :notice => "Les répertoires pour #{@village.nom} ont bien été créés.")
       else
-        flash[:notice] = "Problème d'enregistrement pour #{@village.nom}."
-        render :action => "init_elements"
+        flash[:notice] = "Problème de mise à jour pour #{@village.nom}."
+        render :action => "init_repertoires"
       end
     # sinon on retourne à la saise du 'nc'
     else
       flash[:notice] = "Le repertoire [#{@village.nc}] existe déjà pour #{@village.nom}."
-      render :action => "init_elements"
+      render :action => "init_repertoires"
     end
     
   end

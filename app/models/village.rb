@@ -44,15 +44,28 @@ class Village < ActiveRecord::Base
   end
   
   def dir_existe
-    Dir.entries("public/elements").include?(nc)
+    # y-a-t'il déjà un répertoire relatif au village
+    Dir.entries(ELEMENTS_DIR).include?(dir_nom)
+  end
+  
+  def dir_nom
+    nc
   end
   
   def cree_dir
-    # si le nom court est valide et que le répertoire n'existe pas, on crée un répertoire du même nom dans public/elements/.
+    # si le nom court est valide et que le répertoire n'existe pas, on crée un répertoire dans public/elements/.
     if nc_est_valide && !dir_existe
-      Dir.chdir("public/elements/")
-      Dir.mkdir(nc)
-      Dir.chdir("../..")
+      Dir.chdir(ELEMENTS_DIR)
+      Dir.mkdir(dir_nom)
+      Dir.chdir(dir_nom)
+      Dir.mkdir("photos")
+      Dir.mkdir("cartes")
+      Dir.chdir("photos")
+      Dir.mkdir("originale")
+      Dir.mkdir("def")
+      Dir.mkdir("vignette")
+      Dir.mkdir("web")
+      Dir.chdir(RAILS_ROOT)
     end
   end
 

@@ -30,8 +30,8 @@ Captalog::Application.routes.draw do
       get 'desactive'
       get 'reactive'
       put 'update_desactive'
-      get 'init_elements'
-      put 'update_init_elements'
+      get 'init_repertoires'
+      put 'update_init_repertoires'
     end
     
   end
