@@ -1,6 +1,6 @@
 <h1><%=@titre%></h1>
 
-<%= form_for([@village, @photo]) do |f| %>
+<%= form_for([@village, @photo], :html => {:multipart => true}) do |f| %>
   <%= render 'champs', :f => f %>
   <div class="actions">
     <%= f.submit "Créer la photo" %>

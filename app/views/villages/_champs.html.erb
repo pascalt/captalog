@@ -8,7 +8,7 @@
   <%= f.text_field :nom_sa %>
 </div>
 
-  <% if @village.dir_existe%>
+  <% if @village.dir_existe?%>
     Nom court: <b><%=@village.nc%></b  >
   <%else%>
     <div class="field">

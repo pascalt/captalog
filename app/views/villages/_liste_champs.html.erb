@@ -1,6 +1,6 @@
 <td><%= nom_avec_article_entre_parenthese(village) %></td>
 <td><%= village.type_village %></td>
-<%if village.dir_existe %>
+<%if village.dir_existe? %>
   <td><%=nc_ayant_un_repertoire(village)%></td>
 <%elsif village.actif%>
   <td><%= link_to village.nc.blank? ? '>>>' : village.nc, init_repertoires_village_path(village) %></td>

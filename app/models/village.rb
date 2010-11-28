@@ -1,13 +1,31 @@
 # -*- encoding : utf-8 -*-
 
 class Village < ActiveRecord::Base
+  
   belongs_to :departement
   has_many :photos, :dependent => :destroy
   
   validates :nom_sa, :presence => true, :uniqueness => true
   
+  validates :nc, {:uniqueness => true, :if => :nc_non_blank }
+  
+  def nc_non_blank
+    !nc.blank?
+  end
+  
   validates :type_village, :inclusion => %w(mer campagne montagne)
-  validate  :ne_peut_pas_etre_non_actif_sans_date_de_sortie, :ne_peut_pas_etre_actif_avec_une_date_de_sortie
+  
+  validate  :doit_creer_des_repertoires,
+            :ne_peut_pas_etre_non_actif_sans_date_de_sortie, 
+            :ne_peut_pas_etre_actif_avec_une_date_de_sortie
+  
+  def doit_creer_des_repertoires
+    if (!nc.blank? || !new_record?)  && (Rails.env.development? || Rails.env.production?)
+      errors.add(:nc, "n'est pas valide") if !nc_est_valide?
+      errors.add(:nc, "le répertoire existe déjà") if dir_existe?
+      cree_repertoires if errors.empty?
+    end
+  end
   
   def ne_peut_pas_etre_non_actif_sans_date_de_sortie
     errors.add(:date_sortie, "doit être saisie si désactivé") if !actif && date_sortie.blank?
@@ -20,54 +38,58 @@ class Village < ActiveRecord::Base
   scope :actifs, where("actif = ?", true).order("nom_sa")
   scope :non_actifs, where("actif = ?", false).order("nom_sa")
   
+  
+  # reconstruction du nom avec l'article
   def nom
-    # le nom du village est formé par l'article et son nom sans article
-    article.blank? ? nom_sa : article + " " + nom_sa
+   article.blank? ? nom_sa : article + " " + nom_sa
   end
     
-  def nc_est_valide
-    # le nom court est valide s'il n'est pas blanc 
-    # et qu'il ne contient rien d'autre que des lettre minuscules (a-z) ou des tirets
+  # valdité du nom court ? (non vide et pas caractère autre que a-z)
+  def nc_est_valide?
     !nc.blank? && !(nc  =~ /[^a-z\-]/)
   end
   
+  # proposition d'un non court valide
   def init_nc
-    # à moins que le nom court soit valide, on crée un nom court valide
-    # en mettant tout en minuscule, en retirant les accents et retirant les caractères non alphabétiques (sauf le tiret)
-    unless nc_est_valide
+    unless nc_est_valide?
        self.nc = nom_sa.downcase.
-            gsub(/[àâãäå]/,'a').gsub(/æ/,'ae').
-            gsub(/ç/, 'c').gsub(/[èéêë]/,'e').
-            gsub(/[ïî]/,'i').gsub(/[öô]/,'o').
-            gsub(/[üùû]/,'u').gsub(/[ñ]/,'n').gsub(/[^a-z\-]/,'')
+                 gsub(/[àâãäå]/,'a').gsub(/æ/,'ae').
+                 gsub(/ç/, 'c').gsub(/[èéêë]/,'e').
+                 gsub(/[ïî]/,'i').gsub(/[öô]/,'o').
+                 gsub(/[üùû]/,'u').gsub(/[ñ]/,'n').gsub(/[^a-z\-]/,'')
     end
   end
   
-  def dir_existe
-    # y-a-t'il déjà un répertoire relatif au village
+  # existence du répertoire ?
+  def dir_existe?
     Dir.entries(ELEMENTS_DIR).include?(dir_nom)
   end
   
+  # construction du nom du répertoire racine du village
   def dir_nom
     nc
   end
   
-  def cree_dir
-    # si le nom court est valide et que le répertoire n'existe pas, on crée un répertoire dans public/elements/.
-    if nc_est_valide && !dir_existe
-      Dir.chdir(ELEMENTS_DIR)
-      Dir.mkdir(dir_nom)
-      Dir.chdir(dir_nom)
-      Dir.mkdir("photos")
-      Dir.mkdir("cartes")
-      Dir.chdir("photos")
-      Dir.mkdir("originale")
-      Dir.mkdir("def")
-      Dir.mkdir("vignette")
-      Dir.mkdir("web")
-      Dir.chdir(RAILS_ROOT)
-    end
+  # création des répertoires
+  def cree_repertoires
+    Dir.chdir(ELEMENTS_DIR)
+    Dir.mkdir(dir_nom)
+    Dir.mkdir(dir_nom + PHOTOS_DIR)
+    Dir.mkdir(dir_nom + CARTES_DIR)
+    Dir.mkdir(dir_nom + PHOTOS_ORIGINALES_DIR)
+    Dir.mkdir(dir_nom + PHOTOS_DEFINITIVES_DIR)
+    Dir.mkdir(dir_nom + PHOTOS_VIGNETTES_DIR)
+    Dir.mkdir(dir_nom + PHOTOS_WEB_DIR)
+    Dir.chdir(RAILS_ROOT)
+ end
+  
+  def reactive_et_enregistre
+    self.actif = true
+    self.date_sortie = nil
+    self.save
   end
+  
+  
 
 end
 

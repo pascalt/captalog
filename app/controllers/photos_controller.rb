@@ -31,8 +31,9 @@ class PhotosController < ApplicationController
     @photo = Photo.new(params[:photo])
     @village = Village.find_by_id(params[:village_id])
     @titre = "Nouvelle photo pour : " + @village.nom
-
     if @photo.save
+      FileUtils.mv @photo.url_originale,
+                   "#{ELEMENTS_DIR}/#{@village.dir_nom}#{PHOTOS_ORIGINALES_DIR}/#{@photo.prefix}_originale.jpg" if Rails.env.development? || Rails.env.production?
        redirect_to([@village, @photo], :notice => 'La photo a bien été créée.')
     else
       render :new
@@ -69,9 +70,8 @@ class PhotosController < ApplicationController
     
     @photo = Photo.find(params[:id])
     @village = Village.find_by_id(params[:village_id])
-    @photo.actif = !@photo.actif
 
-    if @photo.save
+    if @photo.active_bascule_et_enregistre
        redirect_to(@village ? village_photos_path(@village) : photos_path, 
                    :notice => "La photo #{@photo.prefix} a bien été #{@photo.actif ? "ré" : "dés"}activée.")
     else

@@ -8,6 +8,8 @@ gem 'rails', '3.0.1'
 gem 'mysql2'
 gem 'magic_encoding'
 gem 'annotate'
+gem 'fileutils'
+gem 'rmagick'
 
 group :development do
   gem 'rspec-rails', '2.0.1'

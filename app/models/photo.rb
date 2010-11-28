@@ -3,11 +3,11 @@ class Photo < ActiveRecord::Base
   belongs_to :village
   
   validates_presence_of :village_id
-  validates :url_originale, :presence => true  #, :uniqueness => true
+  validates :url_originale, :presence => true
   validate  :ne_peut_pas_etre_sans_village_existant
   
   def ne_peut_pas_etre_sans_village_existant
-    errors.add(:village_id, "la photo n'appartient pas à un village inexistant") if !Village.find_by_id(self.village_id)
+    errors.add(:village_id, "la photo n'appartient pas à un village existant") if !Village.find_by_id(self.village_id)
   end
 
   
@@ -20,6 +20,12 @@ class Photo < ActiveRecord::Base
     nom_court_village = self.village.nc ? self.village.nc : ""
     "#{nom_court_village}_#{id.to_s.rjust(5,'0')}"
   end
+  
+  def active_bascule_et_enregistre
+    self.actif = !actif
+    self.save
+  end
+  
     
 end
 

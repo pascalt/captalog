@@ -3,13 +3,23 @@ class VillagesController < ApplicationController
 
   def index
     
-    @titre = "Villages Cap France"
+    # liste tous les villages actifs
     @villages = Village.actifs
+    @titre = "Villages Cap France"
+    
+  end
+
+  def index_non_actifs
+    
+    # liste tous les villages actifs
+    @villages = Village.non_actifs
+    @titre = "Villages désactivés"
     
   end
 
   def show
     
+    # montre un village donné
     @village = Village.find(params[:id])
     @titre = @village.nom
     
@@ -17,13 +27,15 @@ class VillagesController < ApplicationController
 
   def new
     
-    @titre = "Nouveau village"
+    # propose de saisir un nouveau village
     @village = Village.new
+    @titre = "Nouveau village"
     
    end
 
   def edit
     
+    # propose d'éditer un village donné
     @village = Village.find(params[:id])
     @titre = "Editer " + @village.nom
     
@@ -31,12 +43,13 @@ class VillagesController < ApplicationController
 
   def create
     
-    @titre = "Nouveau village"
+    # initialise les attributs d'un villages
     @village = Village.new(params[:village])
-
+    @titre = "Nouveau village"
+    
+    # enregistre les attributs du village et crée ses répertoires
     if @village.save
-      @village.cree_dir if Rails.env.development? || Rails.env.production?
-      redirect_to(@village, :notice => "Le village a bien été créé#{@village.dir_existe ? ", ainsi que ses répertoires" : "."}")
+      redirect_to(@village, :notice => "Le village a bien été créé#{@village.dir_existe? ? ", ainsi que ses répertoires" : "."}")
     else
       render :action => "new"
     end
@@ -45,9 +58,11 @@ class VillagesController < ApplicationController
 
   def update
     
+    # identifie le village à modifier
     @village = Village.find(params[:id])
     @titre = "Editer " + @village.nom
 
+    # met à jour les attributs du village
     if @village.update_attributes(params[:village])
        redirect_to(@village, :notice => "Le village a bien été modifié.")
     else
@@ -58,6 +73,7 @@ class VillagesController < ApplicationController
 
   def destroy
     
+    # déruit le village
     @village = Village.find(params[:id])
     @village.destroy
 
@@ -65,21 +81,25 @@ class VillagesController < ApplicationController
     
   end
   
-  # ========================================
-  # Actions pour la désactivation/réactivation du village
-  # ========================================
+  # Actions pour la désactivation/réactivation d'un village
+  # -------------------------------------------------------
   
   def desactive
+    
+    # propose de désactiver un village donné
     @village = Village.find(params[:id])
     @village.actif = false
     @titre = "Désactiver " + @village.nom
+    
   end
   
   def update_desactive
     
+    # identifie le un village a désactiver
     @village = Village.find(params[:id])
     @titre = "Désactiver " + @village.nom
 
+    # enregistre la desactivation du village
     if @village.update_attributes(params[:village])
        redirect_to(@village, :notice => "#{@village.nom} a bien été désactivé.")
     else
@@ -88,16 +108,12 @@ class VillagesController < ApplicationController
     
   end
   
-  def index_non_actifs
-    @villages = Village.non_actifs
-    @titre = "Villages désactivés"
-  end
   
   def reactive
+    
+    # reactive et enregistre un village donné
     @village = Village.find(params[:id])
-    @village.actif = true
-    @village.date_sortie = nil
-    if @village.save
+    if @village.reactive_et_enregistre
        redirect_to(@village, :notice => "#{@village.nom} a bien été réactivé.")
     else
       flash[:notice] = "#{@village.nom} n'a pas pu être réactivé."
@@ -106,39 +122,36 @@ class VillagesController < ApplicationController
     
   end
   
+  # Actions pour la création des répertoires
+  # -------------------------------------------------------
+  
   def init_repertoires
 
+    # identifie le village
     @village = Village.find(params[:id])
+    @titre = "Initialise les répertoires pour : " + @village.nom
     
-    # à mins que le répertoire 'nc' n'existe déjà, on initialise le nc
-    unless @village.dir_existe
+    # vérifie l'existance du répertoire et propose un nom court
+    unless @village.dir_existe?
       @village.init_nc
-      @titre = "Initialise les répertoires pour : " + @village.nom
     else
       flash[:notice] = "un répertoire existe déjà pour #{@village.nom}."
       render :action => "show"
     end
+    
   end
   
   def update_init_repertoires
     
-    # on récupère les paramètre de la vue, notamment le 'nc' qui sera le nom du répertoire
+    # identifie le village et récupère le nom court
     @village = Village.find(params[:id])
-    @titre = "Initialise les répertoires pour : " + @village.nom
     @village.nc = params[:village][:nc]
+    @titre = "Initialise les répertoires pour : " + @village.nom
     
-    # si le répertoire 'nc' n'existe pas, on l'enregistre et on crée le répertoire
-    if !@village.dir_existe 
-      if @village.save
-        @village.cree_dir if Rails.env.development? || Rails.env.production?
-        redirect_to(@village, :notice => "Les répertoires pour #{@village.nom} ont bien été créés.")
-      else
-        flash[:notice] = "Problème de mise à jour pour #{@village.nom}."
-        render :action => "init_repertoires"
-      end
-    # sinon on retourne à la saise du 'nc'
+    # enregistre le nom court et crée des répertoires
+    if @village.save 
+      redirect_to(@village, :notice => "Les répertoires pour #{@village.nom} ont bien été créés.")
     else
-      flash[:notice] = "Le repertoire [#{@village.nc}] existe déjà pour #{@village.nom}."
       render :action => "init_repertoires"
     end
     
