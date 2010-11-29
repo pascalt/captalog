@@ -1,9 +1,12 @@
 # -*- encoding : utf-8 -*-
 require 'spec_helper'
-
 describe PhotosController do
 
   render_views
+  
+  before(:each) do
+    puts "XX"
+  end
   
   before(:each) do
     @titre_de_base = "Captalog"
@@ -153,7 +156,7 @@ describe PhotosController do
     
     it "devrait avoir le bon titre" do
       get :show, :id => @photo
-      response.should have_selector("title", :content =>  @titre_de_base + " | " + @photo.prefix)
+      response.should have_selector("title", :content =>  @titre_de_base + " | Photo " + @photo.prefix)
     end
     
     it "devrait avoir un retour sur la liste des photos si vu depuis un village" do

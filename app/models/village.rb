@@ -9,15 +9,15 @@ class Village < ActiveRecord::Base
   
   validates :nc, {:uniqueness => true, :if => :nc_non_blank }
   
-  def nc_non_blank
-    !nc.blank?
-  end
-  
   validates :type_village, :inclusion => %w(mer campagne montagne)
   
   validate  :doit_creer_des_repertoires,
             :ne_peut_pas_etre_non_actif_sans_date_de_sortie, 
             :ne_peut_pas_etre_actif_avec_une_date_de_sortie
+  
+  def nc_non_blank
+    !nc.blank?
+  end
   
   def doit_creer_des_repertoires
     if (!nc.blank? || !new_record?)  && (Rails.env.development? || Rails.env.production?)

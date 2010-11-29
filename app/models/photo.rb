@@ -4,10 +4,17 @@ class Photo < ActiveRecord::Base
   
   validates_presence_of :village_id
   validates :url_originale, :presence => true
-  validate  :ne_peut_pas_etre_sans_village_existant
+  validate  :ne_peut_pas_etre_sans_village_existant, :teste_fichier_url_originale
   
   def ne_peut_pas_etre_sans_village_existant
     errors.add(:village_id, "la photo n'appartient pas à un village existant") if !Village.find_by_id(self.village_id)
+  end
+  
+  def teste_fichier_url_originale
+    if Rails.env.development? || Rails.env.production?
+      #errors.add(:nc, "erreur1 à tester") if ne_passe_pas_le_test1
+      #errors.add(:nc, "erreur2 à tester") if ne_passe_aps_le_test2
+    end
   end
 
   
@@ -20,13 +27,22 @@ class Photo < ActiveRecord::Base
     nom_court_village = self.village.nc ? self.village.nc : ""
     "#{nom_court_village}_#{id.to_s.rjust(5,'0')}"
   end
-  
+
   def active_bascule_et_enregistre
     self.actif = !actif
     self.save
   end
   
-    
+  def cree_fichiers_photos
+    #crée le fichier de photo originale selon la convention de nomage des photos et sauve le nom de la photo original pour mémoire
+    if Rails.env.development? || Rails.env.production?
+      tmp_nom_original = url_originale.original_filename
+      FileUtils.mv url_originale, "#{ELEMENTS_DIR}/#{village.dir_nom}#{PHOTOS_ORIGINALES_DIR}/#{prefix}_originale.jpg"
+      self.url_originale = tmp_nom_original
+      save
+    end
+  end
+  
 end
 
 

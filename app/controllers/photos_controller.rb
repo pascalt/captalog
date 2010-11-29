@@ -11,7 +11,7 @@ class PhotosController < ApplicationController
   def show
     @photo = Photo.find(params[:id])
     @village = Village.find_by_id(params[:village_id])
-    @titre = @photo.prefix
+    @titre = "Photo "+ @photo.prefix
   end
 
   def new
@@ -30,11 +30,11 @@ class PhotosController < ApplicationController
   def create
     @photo = Photo.new(params[:photo])
     @village = Village.find_by_id(params[:village_id])
+    
     @titre = "Nouvelle photo pour : " + @village.nom
     if @photo.save
-      FileUtils.mv @photo.url_originale,
-                   "#{ELEMENTS_DIR}/#{@village.dir_nom}#{PHOTOS_ORIGINALES_DIR}/#{@photo.prefix}_originale.jpg" if Rails.env.development? || Rails.env.production?
-       redirect_to([@village, @photo], :notice => 'La photo a bien été créée.')
+      @photo.cree_fichiers_photos
+      redirect_to([@village, @photo], :notice => 'La photo a bien été créée.')
     else
       render :new
     end
