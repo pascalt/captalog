@@ -19,6 +19,9 @@ class PhotosController < ApplicationController
     @village = Village.find_by_id(params[:village_id])
     @photo.village_id = @village.id unless @village.blank?
     @titre = "Nouvelle photo pour : " + @village.nom
+    
+    redirect_to(init_repertoires_village_path(@village), :notice => 'répertoires absents.') unless @village.repertoires_existent?
+    
   end
 
   def edit

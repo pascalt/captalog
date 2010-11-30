@@ -59,28 +59,37 @@ class Village < ActiveRecord::Base
     Dir.entries(ELEMENTS_DIR).include?(dir_nom)
   end
   
-  # construction du nom du répertoire racine du village
+  # construction des nom des répertoires 
   def dir_nom
     nc
   end
   
+  def liste_des_repertoires
+    [ ELEMENTS_DIR + "/" + dir_nom, 
+      ELEMENTS_DIR + "/" + dir_nom + PHOTOS_DIR, 
+      ELEMENTS_DIR + "/" + dir_nom + CARTES_DIR, 
+      ELEMENTS_DIR + "/" + dir_nom + PHOTOS_ORIGINALES_DIR,
+      ELEMENTS_DIR + "/" + dir_nom + PHOTOS_DEFINITIVES_DIR, 
+      ELEMENTS_DIR + "/" + dir_nom + PHOTOS_VIGNETTES_DIR, 
+      ELEMENTS_DIR + "/" + dir_nom + PHOTOS_WEB_DIR ]
+  end
+  
   # création des répertoires
   def cree_repertoires
-    Dir.mkdir(ELEMENTS_DIR + "/" + dir_nom) unless Dir.entries(ELEMENTS_DIR).include?(dir_nom)
-    Dir.mkdir(ELEMENTS_DIR + "/" + dir_nom + PHOTOS_DIR) unless Dir.entries(ELEMENTS_DIR + "/" + dir_nom).include?(PHOTOS_DIR)
-    Dir.mkdir(ELEMENTS_DIR + "/" + dir_nom + CARTES_DIR) unless Dir.entries(ELEMENTS_DIR + "/" + dir_nom).include?(CARTES_DIR)
-    Dir.mkdir(ELEMENTS_DIR + "/" + dir_nom + PHOTOS_ORIGINALES_DIR) unless Dir.entries(ELEMENTS_DIR + "/" + dir_nom).include?(PHOTOS_ORIGINALES_DIR)
-    Dir.mkdir(ELEMENTS_DIR + "/" + dir_nom + PHOTOS_DEFINITIVES_DIR) unless Dir.entries(ELEMENTS_DIR + "/" + dir_nom).include?(PHOTOS_DEFINITIVES_DIR)
-    Dir.mkdir(ELEMENTS_DIR + "/" + dir_nom + PHOTOS_VIGNETTES_DIR) unless Dir.entries(ELEMENTS_DIR + "/" + dir_nom).include?(PHOTOS_VIGNETTES_DIR)
-    Dir.mkdir(ELEMENTS_DIR + "/" + dir_nom + PHOTOS_WEB_DIR) unless Dir.entries(ELEMENTS_DIR + "/" + dir_nom).include?(PHOTOS_WEB_DIR)
+    liste_des_repertoires.each {|rep| FileUtils.mkdir_p(rep)}
  end
-  
+ 
+ def repertoires_existent?
+    
+   liste_des_repertoires.each {|rep| @reponse &&= File.directory?(rep)} if (@reponse = !nc.blank?) #l'affectation est voulue
+   return @reponse
+ end
+ 
   def reactive_et_enregistre
     self.actif = true
     self.date_sortie = nil
     self.save
   end
-  
   
 
 end

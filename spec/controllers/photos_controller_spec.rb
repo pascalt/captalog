@@ -209,8 +209,13 @@ describe PhotosController do
   describe "le NEW depuis un village" do
     
     before(:each) do
-      @village = Factory(:village)
-     end
+      @village = Factory(:village) # création de village de référence pour la photo
+      FileUtils.rm_r(ELEMENTS_DIR) #nettoyage du répertoire des éléments
+      Dir.mkdir(ELEMENTS_DIR) #création du répertoire des éléments
+      FileUtils.cp "#{Rails.root.to_s}/public/test/Zouzou.jpg", "#{ELEMENTS_DIR}/Zouzou.jpg" #copie du fichier tmp de simulation d'upload
+      @village.cree_repertoires #création des répertoires du village
+      
+    end
     
     it "devrait réussir" do
       get :new, :village_id => @village.id
@@ -225,6 +230,13 @@ describe PhotosController do
     it "devrait avoir un retour sur la liste des photos de ce village" do
       get :new, :village_id => @village
       response.should have_selector("a", :href => village_photos_path(@village), :content => "Retour")
+    end
+    
+    it ",avec absence de répertoires pour les photos, devrait rediriger vers l'initialisation des répertoires" do 
+      @attr = { :url_originale => "#{ELEMENTS_DIR}/Zouzou.jpg", :actif => true, :village_id => @village.id }
+      FileUtils.rm_r(ELEMENTS_DIR + "/" + @village.dir_nom + PHOTOS_DIR)
+      get :new, :village_id => @village
+      response.should redirect_to(init_repertoires_village_path(@village))
     end
     
   end
@@ -250,6 +262,7 @@ describe PhotosController do
         post :create, :photo => @attr, :village_id => @village.id
         response.should have_selector("title", :content =>  @titre_de_base + " | Nouvelle photo pour : " + @village.nom)
       end
+      
     end
     
     describe "réussi" do
