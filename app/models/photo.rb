@@ -24,8 +24,7 @@ class Photo < ActiveRecord::Base
   scope :non_actives, where("actif = ?", false)
   
   def prefix
-    nom_court_village = self.village.nc ? self.village.nc : ""
-    "#{nom_court_village}_#{id.to_s.rjust(5,'0')}"
+    "#{village.nc}_#{id.to_s.rjust(5,'0')}"
   end
 
   def active_bascule_et_enregistre
@@ -35,12 +34,10 @@ class Photo < ActiveRecord::Base
   
   def cree_fichiers_photos
     #crée le fichier de photo originale selon la convention de nomage des photos et sauve le nom de la photo original pour mémoire
-    if Rails.env.development? || Rails.env.production?
-      tmp_nom_original = url_originale.original_filename
-      FileUtils.mv url_originale, "#{ELEMENTS_DIR}/#{village.dir_nom}#{PHOTOS_ORIGINALES_DIR}/#{prefix}_originale.jpg"
-      self.url_originale = tmp_nom_original
-      save
-    end
+    tmp_nom_original = Rails.env.test? ? url_originale : url_originale.original_filename
+    FileUtils.mv url_originale, "#{ELEMENTS_DIR}/#{village.dir_nom}#{PHOTOS_ORIGINALES_DIR}/#{prefix}_originale.jpg"
+    self.url_originale = tmp_nom_original
+    save
   end
   
 end

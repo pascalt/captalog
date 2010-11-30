@@ -2,7 +2,7 @@
 require 'spec_helper'
 
 describe VillagesController do
-  
+    
   render_views
   
   before(:each) do
@@ -174,6 +174,8 @@ describe VillagesController do
     describe "réussi" do
       
       before(:each) do
+        FileUtils.remove_dir(ELEMENTS_DIR)
+        Dir.mkdir(ELEMENTS_DIR)
         @attr = { :nom_sa => "Village Zouzou", :article => "Le", :type_village => "campagne", 
                   :nc => "a", :latitude => "0.12", :longitude => "0.14", :rue => "33bis rue pluf", :ville => "Saint-Charmant",
                   :cp => "30987", :actif => true, :departement_id => 1, :date_entree => "1998-07-12 00:00:00 UTC"}

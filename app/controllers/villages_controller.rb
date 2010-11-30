@@ -47,9 +47,10 @@ class VillagesController < ApplicationController
     @village = Village.new(params[:village])
     @titre = "Nouveau village"
     
-    # enregistre les attributs du village et crée ses répertoires
+    # enregistre les attributs du village puis crée ses répertoires
     if @village.save
-      redirect_to(@village, :notice => "Le village a bien été créé#{@village.dir_existe? ? ", ainsi que ses répertoires" : "."}")
+      @village.cree_repertoires if !@village.nc.blank?
+      redirect_to(@village, :notice => "Le village a bien été créé#{", ainsi que ses répertoires" if !@village.nc.blank?}.")
     else
       render :action => "new"
     end
@@ -131,8 +132,8 @@ class VillagesController < ApplicationController
     @village = Village.find(params[:id])
     @titre = "Initialise les répertoires pour : " + @village.nom
     
-    # vérifie l'existance du répertoire et propose un nom court
-    unless @village.dir_existe?
+    # vérifie le nom court n'existe pas
+    if @village.nc.blank?
       @village.init_nc
     else
       flash[:notice] = "un répertoire existe déjà pour #{@village.nom}."
@@ -148,9 +149,15 @@ class VillagesController < ApplicationController
     @village.nc = params[:village][:nc]
     @titre = "Initialise les répertoires pour : " + @village.nom
     
-    # enregistre le nom court et crée des répertoires
-    if @village.save 
-      redirect_to(@village, :notice => "Les répertoires pour #{@village.nom} ont bien été créés.")
+    # enregistre le nom court puis crée des répertoires
+    if @village.save
+      if !@village.nc.blank?
+        @village.cree_repertoires
+        flash[:notice] = "Les répertoires pour #{@village.nom} ont bien été créés."
+      else
+        flash[:notice] = "Les répertoires pour #{@village.nom} n'ont pas été créés."
+      end
+      redirect_to(@village)
     else
       render :action => "init_repertoires"
     end

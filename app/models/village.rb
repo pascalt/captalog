@@ -11,7 +11,7 @@ class Village < ActiveRecord::Base
   
   validates :type_village, :inclusion => %w(mer campagne montagne)
   
-  validate  :doit_creer_des_repertoires,
+  validate  :doit_avoir_un_nc_valide,
             :ne_peut_pas_etre_non_actif_sans_date_de_sortie, 
             :ne_peut_pas_etre_actif_avec_une_date_de_sortie
   
@@ -19,12 +19,8 @@ class Village < ActiveRecord::Base
     !nc.blank?
   end
   
-  def doit_creer_des_repertoires
-    if (!nc.blank? || !new_record?)  && (Rails.env.development? || Rails.env.production?)
-      errors.add(:nc, "n'est pas valide") if !nc_est_valide?
-      errors.add(:nc, "le répertoire existe déjà") if dir_existe?
-      cree_repertoires if errors.empty?
-    end
+  def doit_avoir_un_nc_valide
+    errors.add(:nc, "n'est pas valide") if !nc_est_valide?
   end
   
   def ne_peut_pas_etre_non_actif_sans_date_de_sortie
@@ -46,18 +42,16 @@ class Village < ActiveRecord::Base
     
   # valdité du nom court ? (non vide et pas caractère autre que a-z)
   def nc_est_valide?
-    !nc.blank? && !(nc  =~ /[^a-z\-]/)
+    !(nc  =~ /[^a-z\-]/)
   end
   
   # proposition d'un non court valide
   def init_nc
-    unless nc_est_valide?
-       self.nc = nom_sa.downcase.
-                 gsub(/[àâãäå]/,'a').gsub(/æ/,'ae').
-                 gsub(/ç/, 'c').gsub(/[èéêë]/,'e').
-                 gsub(/[ïî]/,'i').gsub(/[öô]/,'o').
-                 gsub(/[üùû]/,'u').gsub(/[ñ]/,'n').gsub(/[^a-z\-]/,'')
-    end
+    self.nc = nom_sa.downcase.gsub(/[àâãäå]/,'a').gsub(/æ/,'ae').
+                              gsub(/ç/, 'c').gsub(/[èéêë]/,'e').
+                              gsub(/[ïî]/,'i').gsub(/[öô]/,'o').
+                              gsub(/[üùû]/,'u').gsub(/[ñ]/,'n').
+                              gsub(/[^a-z\-]/,'')
   end
   
   # existence du répertoire ?
@@ -72,15 +66,13 @@ class Village < ActiveRecord::Base
   
   # création des répertoires
   def cree_repertoires
-    Dir.chdir(ELEMENTS_DIR)
-    Dir.mkdir(dir_nom)
-    Dir.mkdir(dir_nom + PHOTOS_DIR)
-    Dir.mkdir(dir_nom + CARTES_DIR)
-    Dir.mkdir(dir_nom + PHOTOS_ORIGINALES_DIR)
-    Dir.mkdir(dir_nom + PHOTOS_DEFINITIVES_DIR)
-    Dir.mkdir(dir_nom + PHOTOS_VIGNETTES_DIR)
-    Dir.mkdir(dir_nom + PHOTOS_WEB_DIR)
-    Dir.chdir(RAILS_ROOT)
+    Dir.mkdir(ELEMENTS_DIR + "/" + dir_nom) unless Dir.entries(ELEMENTS_DIR).include?(dir_nom)
+    Dir.mkdir(ELEMENTS_DIR + "/" + dir_nom + PHOTOS_DIR) unless Dir.entries(ELEMENTS_DIR + "/" + dir_nom).include?(PHOTOS_DIR)
+    Dir.mkdir(ELEMENTS_DIR + "/" + dir_nom + CARTES_DIR) unless Dir.entries(ELEMENTS_DIR + "/" + dir_nom).include?(CARTES_DIR)
+    Dir.mkdir(ELEMENTS_DIR + "/" + dir_nom + PHOTOS_ORIGINALES_DIR) unless Dir.entries(ELEMENTS_DIR + "/" + dir_nom).include?(PHOTOS_ORIGINALES_DIR)
+    Dir.mkdir(ELEMENTS_DIR + "/" + dir_nom + PHOTOS_DEFINITIVES_DIR) unless Dir.entries(ELEMENTS_DIR + "/" + dir_nom).include?(PHOTOS_DEFINITIVES_DIR)
+    Dir.mkdir(ELEMENTS_DIR + "/" + dir_nom + PHOTOS_VIGNETTES_DIR) unless Dir.entries(ELEMENTS_DIR + "/" + dir_nom).include?(PHOTOS_VIGNETTES_DIR)
+    Dir.mkdir(ELEMENTS_DIR + "/" + dir_nom + PHOTOS_WEB_DIR) unless Dir.entries(ELEMENTS_DIR + "/" + dir_nom).include?(PHOTOS_WEB_DIR)
  end
   
   def reactive_et_enregistre

@@ -3,11 +3,7 @@ require 'spec_helper'
 describe PhotosController do
 
   render_views
-  
-  before(:each) do
-    puts "XX"
-  end
-  
+    
   before(:each) do
     @titre_de_base = "Captalog"
   end
@@ -259,7 +255,11 @@ describe PhotosController do
     describe "réussi" do
       
       before(:each) do
-        @attr = { :url_originale => "Zouzou.jpg", :actif => true, :village_id => @village.id }
+        FileUtils.remove_dir(ELEMENTS_DIR)
+        Dir.mkdir(ELEMENTS_DIR)
+        FileUtils.cp "#{Rails.root.to_s}/public/test/Zouzou.jpg", "#{ELEMENTS_DIR}/Zouzou.jpg"
+        @attr = { :url_originale => "#{ELEMENTS_DIR}/Zouzou.jpg", :actif => true, :village_id => @village.id }
+        @village.cree_repertoires
       end
       
       it "devrait avoir les attributs passés" do

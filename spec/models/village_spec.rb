@@ -4,6 +4,7 @@ require 'spec_helper'
 Factory.define :village do |village|
   village.article      "Le"
   village.nom_sa       "Village"
+  village.nc           "village"
   village.type_village "mer"
   village.cp           "14000"
   village.ville        "Ville"
