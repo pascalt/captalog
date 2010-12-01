@@ -404,7 +404,7 @@ describe PhotosController do
         @attr.merge!({ :url_originale => "photo.jpg", :url_definitive => "#{ELEMENTS_DIR}/Zouzou.jpg" })
         put :update, :id => @photo, :photo => @attr
         FileUtils.compare_file("#{Rails.root.to_s}/public/test/Zouzou.jpg", @photo.nom_fichier_photo_definitive).should be_true
-      end
+       end
       
     end
 
