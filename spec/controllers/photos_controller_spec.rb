@@ -318,23 +318,17 @@ describe PhotosController do
         File.file?(@photo.nom_fichier_photo_originale).should be_true
       end
       
-      it "devrait créer et bien nommer le fichier photo définitive" do
+      it "devrait créer et bien nommer les fichiers photo définitive, vignette et web" do
         FileUtils.cp "#{Rails.root.to_s}/public/test/zizi.jpg", "#{ELEMENTS_DIR}/zizi.jpg"
         @attr.merge!(:url_definitive => "#{ELEMENTS_DIR}/zizi.jpg")
         post :create, :photo => @attr, :village_id => @village.id
         @photo = Photo.find_by_url_originale(@attr[:url_originale])
         File.file?(@photo.nom_fichier_photo_definitive).should be_true
-      end
-      
-      it "devrait créer et bien nommer le fichier photo vignette" do
-        FileUtils.cp "#{Rails.root.to_s}/public/test/zizi.jpg", "#{ELEMENTS_DIR}/zizi.jpg"
-        @attr.merge!(:url_definitive => "#{ELEMENTS_DIR}/zizi.jpg")
-        post :create, :photo => @attr, :village_id => @village.id
-        @photo = Photo.find_by_url_originale(@attr[:url_originale])
         File.file?(@photo.nom_fichier_photo_vignette).should be_true
+        File.file?(@photo.nom_fichier_photo_web).should be_true
+        
       end
-      
-      
+        
     end
 
   end

@@ -44,6 +44,11 @@ class Photo < ActiveRecord::Base
     "#{ELEMENTS_DIR}/#{village.dir_nom}#{PHOTOS_VIGNETTES_DIR}/#{prefix}_vignette.jpg"
   end
 
+  def nom_fichier_photo_web
+    "#{ELEMENTS_DIR}/#{village.dir_nom}#{PHOTOS_WEB_DIR}/#{prefix}_web.jpg"
+  end
+
+
   def fichier_photo_definitive_existe?
     File.file?(nom_fichier_photo_definitive)
   end
@@ -65,15 +70,24 @@ class Photo < ActiveRecord::Base
     save
     
     cree_fichier_photo_vignette
+    cree_fichier_photo_web
     
   end
   
   def cree_fichier_photo_vignette
-    image_definitive = Magick::Image::read(nom_fichier_photo_definitive).first
+    image = Magick::Image::read(nom_fichier_photo_definitive).first
     
-    image_definitive.change_geometry!('100') { |cols, rows, img| img.resize!(cols, rows)}
-    image_definitive.write nom_fichier_photo_vignette
+    image.change_geometry!('100') { |cols, rows, img| img.resize!(cols, rows)}
+    image.write nom_fichier_photo_vignette
   end
+  
+  def cree_fichier_photo_web
+    image = Magick::Image::read(nom_fichier_photo_definitive).first
+    
+    image.change_geometry!('640') { |cols, rows, img| img.resize!(cols, rows)}
+    image.write nom_fichier_photo_web
+  end
+  
   
 end
 
