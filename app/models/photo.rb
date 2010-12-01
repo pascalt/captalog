@@ -39,10 +39,15 @@ class Photo < ActiveRecord::Base
   def nom_fichier_photo_definitive
     "#{ELEMENTS_DIR}/#{village.dir_nom}#{PHOTOS_DEFINITIVES_DIR}/#{prefix}_def.jpg"
   end
-
+  
   def nom_fichier_photo_vignette
     "#{ELEMENTS_DIR}/#{village.dir_nom}#{PHOTOS_VIGNETTES_DIR}/#{prefix}_vignette.jpg"
   end
+  
+  def url_fichier_photo_vignette
+    "#{ELEMENTS_URL}/#{village.dir_nom}#{PHOTOS_VIGNETTES_DIR}/#{prefix}_vignette.jpg"
+  end
+
 
   def nom_fichier_photo_web
     "#{ELEMENTS_DIR}/#{village.dir_nom}#{PHOTOS_WEB_DIR}/#{prefix}_web.jpg"

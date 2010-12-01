@@ -4,6 +4,7 @@
 
 <table>
   <tr>
+    <th></th>
     <th>Village</th>
     <th>Préfix</th>
     <th>Url originale</th>
@@ -17,6 +18,7 @@
 
 <% @photos.each do |photo| %>
   <tr>
+    <td><%= image_tag(photo.url_fichier_photo_vignette) %></td>
     <td><%= photo.village.nom %></td>
     <td><%= photo.prefix %></td>
     <td><%= photo.url_originale %></td>
