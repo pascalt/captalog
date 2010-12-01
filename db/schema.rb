@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101125074425) do
+ActiveRecord::Schema.define(:version => 20101130203459) do
 
   create_table "departements", :force => true do |t|
     t.integer  "region_id"
@@ -26,9 +26,10 @@ ActiveRecord::Schema.define(:version => 20101125074425) do
     t.string   "legende"
     t.string   "info"
     t.string   "url_originale"
-    t.boolean  "actif",         :default => true
+    t.boolean  "actif",          :default => true
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "url_definitive"
   end
 
   create_table "regions", :force => true do |t|

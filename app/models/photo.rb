@@ -32,12 +32,47 @@ class Photo < ActiveRecord::Base
     self.save
   end
   
-  def cree_fichiers_photos
+  def nom_fichier_photo_originale
+    "#{ELEMENTS_DIR}/#{village.dir_nom}#{PHOTOS_ORIGINALES_DIR}/#{prefix}_originale.jpg"
+  end
+
+  def nom_fichier_photo_definitive
+    "#{ELEMENTS_DIR}/#{village.dir_nom}#{PHOTOS_DEFINITIVES_DIR}/#{prefix}_def.jpg"
+  end
+
+  def nom_fichier_photo_vignette
+    "#{ELEMENTS_DIR}/#{village.dir_nom}#{PHOTOS_VIGNETTES_DIR}/#{prefix}_vignette.jpg"
+  end
+
+  def fichier_photo_definitive_existe?
+    File.file?(nom_fichier_photo_definitive)
+  end
+  
+  def cree_fichier_photo_originale
     #crée le fichier de photo originale selon la convention de nomage des photos et sauve le nom de la photo original pour mémoire
     tmp_nom_original = Rails.env.test? ? url_originale : url_originale.original_filename
-    FileUtils.mv url_originale, "#{ELEMENTS_DIR}/#{village.dir_nom}#{PHOTOS_ORIGINALES_DIR}/#{prefix}_originale.jpg"
+    FileUtils.mv url_originale, nom_fichier_photo_originale
     self.url_originale = tmp_nom_original
     save
+  end
+
+  def cree_fichier_photo_definitive
+    
+    #crée le fichier de photo définitive selon la convention de nomage des photos et sauve le nom de la photo définitive pour mémoire
+    tmp_nom_definitive = Rails.env.test? ? url_definitive : url_definitive.original_filename
+    FileUtils.mv url_definitive, nom_fichier_photo_definitive
+    self.url_definitive = tmp_nom_definitive
+    save
+    
+    cree_fichier_photo_vignette
+    
+  end
+  
+  def cree_fichier_photo_vignette
+    image_definitive = Magick::Image::read(nom_fichier_photo_definitive).first
+    
+    image_definitive.change_geometry!('100') { |cols, rows, img| img.resize!(cols, rows)}
+    image_definitive.write nom_fichier_photo_vignette
   end
   
 end
