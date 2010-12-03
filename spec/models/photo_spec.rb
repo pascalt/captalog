@@ -36,17 +36,19 @@ end
 
 
 
+
 # == Schema Information
 #
 # Table name: photos
 #
-#  id            :integer(4)      not null, primary key
-#  village_id    :integer(4)
-#  legende       :string(255)
-#  info          :string(255)
-#  url_originale :string(255)
-#  actif         :boolean(1)      default(TRUE)
-#  created_at    :datetime
-#  updated_at    :datetime
+#  id             :integer(4)      not null, primary key
+#  village_id     :integer(4)
+#  legende        :string(255)
+#  info           :string(255)
+#  url_originale  :string(255)
+#  actif          :boolean(1)      default(TRUE)
+#  created_at     :datetime
+#  updated_at     :datetime
+#  url_definitive :string(255)
 #
 

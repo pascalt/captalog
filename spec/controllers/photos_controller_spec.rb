@@ -316,6 +316,8 @@ describe PhotosController do
         post :create, :photo => @attr, :village_id => @village.id
         @photo = Photo.find_by_url_originale(@attr[:url_originale])
         File.file?(@photo.nom_fichier_photo_originale).should be_true
+        File.file?(@photo.nom_fichier_photo_vignette).should be_true
+        File.file?(@photo.nom_fichier_photo_web).should be_true
       end
       
       it "devrait créer et bien nommer les fichiers photo définitive, vignette et web" do
@@ -455,6 +457,22 @@ describe PhotosController do
         get :active_bascule, :id => @photo
         @photo.reload.actif.should be_false
       end
+
+      it "devrait placer les photos dans le répertoire desavtive" do
+        FileUtils.remove_dir(ELEMENTS_DIR)
+        Dir.mkdir(ELEMENTS_DIR)
+        @village.cree_repertoires
+        FileUtils.cp "#{Rails.root.to_s}/public/test/Zouzou.jpg", @photo.nom_fichier_photo_originale
+        FileUtils.cp "#{Rails.root.to_s}/public/test/Zouzou.jpg", @photo.nom_fichier_photo_definitive
+        FileUtils.cp "#{Rails.root.to_s}/public/test/Zouzou.jpg", @photo.nom_fichier_photo_web
+        FileUtils.cp "#{Rails.root.to_s}/public/test/Zouzou.jpg", @photo.nom_fichier_photo_vignette
+        get :active_bascule, :id => @photo
+        File.file?(@photo.nom_fichier_photo_desactive_originale).should be_true
+        File.file?(@photo.nom_fichier_photo_desactive_definitive).should be_true
+        File.file?(@photo.nom_fichier_photo_desactive_web).should be_true
+        File.file?(@photo.nom_fichier_photo_desactive_vignette).should be_true
+      end
+
     
       it "devrait rediriger sur la liste photos si pas appelée depuis un village" do
         get :active_bascule, :id => @photo

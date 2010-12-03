@@ -67,11 +67,16 @@ class Village < ActiveRecord::Base
   def liste_des_repertoires
     [ ELEMENTS_DIR + "/" + dir_nom, 
       ELEMENTS_DIR + "/" + dir_nom + PHOTOS_DIR, 
+      ELEMENTS_DIR + "/" + dir_nom + PHOTOS_DIR + DESACTIVEES_DIR, 
       ELEMENTS_DIR + "/" + dir_nom + CARTES_DIR, 
       ELEMENTS_DIR + "/" + dir_nom + PHOTOS_ORIGINALES_DIR,
       ELEMENTS_DIR + "/" + dir_nom + PHOTOS_DEFINITIVES_DIR, 
       ELEMENTS_DIR + "/" + dir_nom + PHOTOS_VIGNETTES_DIR, 
-      ELEMENTS_DIR + "/" + dir_nom + PHOTOS_WEB_DIR ]
+      ELEMENTS_DIR + "/" + dir_nom + PHOTOS_WEB_DIR,
+      ELEMENTS_DIR + "/" + dir_nom + PHOTOS_DESACTIVEES_ORIGINALES_DIR,
+      ELEMENTS_DIR + "/" + dir_nom + PHOTOS_DESACTIVEES_DEFINITIVES_DIR, 
+      ELEMENTS_DIR + "/" + dir_nom + PHOTOS_DESACTIVEES_VIGNETTES_DIR, 
+      ELEMENTS_DIR + "/" + dir_nom + PHOTOS_DESACTIVEES_WEB_DIR ]
   end
   
   # création des répertoires

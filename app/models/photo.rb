@@ -29,7 +29,22 @@ class Photo < ActiveRecord::Base
 
   def active_bascule_et_enregistre
     self.actif = !actif
+    active_bascule_fichiers_photos
     self.save
+  end
+  
+  def active_bascule_fichiers_photos
+    if actif
+      FileUtils.mv nom_fichier_photo_desactive_originale, nom_fichier_photo_originale if File.file?(nom_fichier_photo_desactive_originale)
+      FileUtils.mv nom_fichier_photo_desactive_definitive, nom_fichier_photo_definitive if File.file?(nom_fichier_photo_desactive_definitive)
+      FileUtils.mv nom_fichier_photo_desactive_vignette, nom_fichier_photo_vignette if File.file?(nom_fichier_photo_desactive_vignette)
+      FileUtils.mv nom_fichier_photo_desactive_web, nom_fichier_photo_web if File.file?(nom_fichier_photo_desactive_web)
+    else
+      FileUtils.mv nom_fichier_photo_originale, nom_fichier_photo_desactive_originale if File.file?(nom_fichier_photo_originale)
+      FileUtils.mv nom_fichier_photo_definitive, nom_fichier_photo_desactive_definitive if File.file?(nom_fichier_photo_definitive)
+      FileUtils.mv nom_fichier_photo_vignette, nom_fichier_photo_desactive_vignette if File.file?(nom_fichier_photo_vignette)
+      FileUtils.mv nom_fichier_photo_web, nom_fichier_photo_desactive_web if File.file?(nom_fichier_photo_web)
+     end
   end
   
   def nom_fichier_photo_originale
@@ -44,15 +59,42 @@ class Photo < ActiveRecord::Base
     "#{ELEMENTS_DIR}/#{village.dir_nom}#{PHOTOS_VIGNETTES_DIR}/#{prefix}_vignette.jpg"
   end
   
+  def nom_fichier_photo_web
+    "#{ELEMENTS_DIR}/#{village.dir_nom}#{PHOTOS_WEB_DIR}/#{prefix}_web.jpg"
+  end
+  
+  def url_fichier_photo_originale
+    "#{ELEMENTS_URL}/#{village.dir_nom}#{PHOTOS_DEFINITIVES_DIR}/#{prefix}_originale.jpg"
+  end
+  
+  def url_fichier_photo_definitive
+    "#{ELEMENTS_URL}/#{village.dir_nom}#{PHOTOS_DEFINITIVES_DIR}/#{prefix}_def.jpg"
+  end
+  
   def url_fichier_photo_vignette
     "#{ELEMENTS_URL}/#{village.dir_nom}#{PHOTOS_VIGNETTES_DIR}/#{prefix}_vignette.jpg"
   end
 
-
-  def nom_fichier_photo_web
-    "#{ELEMENTS_DIR}/#{village.dir_nom}#{PHOTOS_WEB_DIR}/#{prefix}_web.jpg"
+  def url_fichier_photo_web
+    "#{ELEMENTS_URL}/#{village.dir_nom}#{PHOTOS_WEB_DIR}/#{prefix}_web.jpg"
+  end
+  
+  def nom_fichier_photo_desactive_originale
+    "#{ELEMENTS_DIR}/#{village.dir_nom}#{PHOTOS_DESACTIVEES_ORIGINALES_DIR}/#{prefix}_originale.jpg" 
   end
 
+  def nom_fichier_photo_desactive_definitive
+    "#{ELEMENTS_DIR}/#{village.dir_nom}#{PHOTOS_DESACTIVEES_DEFINITIVES_DIR}/#{prefix}_def.jpg" 
+  end
+
+  def nom_fichier_photo_desactive_vignette
+    "#{ELEMENTS_DIR}/#{village.dir_nom}#{PHOTOS_DESACTIVEES_VIGNETTES_DIR}/#{prefix}_vignette.jpg" 
+  end
+  
+  def nom_fichier_photo_desactive_web
+    "#{ELEMENTS_DIR}/#{village.dir_nom}#{PHOTOS_DESACTIVEES_WEB_DIR}/#{prefix}_web.jpg" 
+  end
+  
 
   def fichier_photo_definitive_existe?
     File.file?(nom_fichier_photo_definitive)
@@ -64,6 +106,10 @@ class Photo < ActiveRecord::Base
     FileUtils.mv url_originale, nom_fichier_photo_originale
     self.url_originale = tmp_nom_original
     save
+    
+    cree_fichier_photo_vignette('originale')
+    cree_fichier_photo_web('originale')
+    
   end
 
   def cree_fichier_photo_definitive
@@ -74,20 +120,28 @@ class Photo < ActiveRecord::Base
     self.url_definitive = tmp_nom_definitive
     save
     
-    cree_fichier_photo_vignette
-    cree_fichier_photo_web
+    cree_fichier_photo_vignette('definitive')
+    cree_fichier_photo_web('definitive')
     
   end
   
-  def cree_fichier_photo_vignette
-    image = Magick::Image::read(nom_fichier_photo_definitive).first
+  def cree_fichier_photo_vignette(type_photo)
+    
+    nom_fichier_photo = nom_fichier_photo_definitive if type_photo == 'definitive'
+    nom_fichier_photo = nom_fichier_photo_originale if type_photo == 'originale'
+
+    image = Magick::Image::read(nom_fichier_photo).first
     
     image.change_geometry!('100') { |cols, rows, img| img.resize!(cols, rows)}
     image.write nom_fichier_photo_vignette
   end
   
-  def cree_fichier_photo_web
-    image = Magick::Image::read(nom_fichier_photo_definitive).first
+  def cree_fichier_photo_web(type_photo)
+    
+    nom_fichier_photo = nom_fichier_photo_definitive if type_photo == 'definitive'
+    nom_fichier_photo = nom_fichier_photo_originale if type_photo == 'originale'
+    
+    image = Magick::Image::read(nom_fichier_photo).first
     
     image.change_geometry!('640') { |cols, rows, img| img.resize!(cols, rows)}
     image.write nom_fichier_photo_web
@@ -97,17 +151,19 @@ class Photo < ActiveRecord::Base
 end
 
 
+
 # == Schema Information
 #
 # Table name: photos
 #
-#  id            :integer(4)      not null, primary key
-#  village_id    :integer(4)
-#  legende       :string(255)
-#  info          :string(255)
-#  url_originale :string(255)
-#  actif         :boolean(1)      default(TRUE)
-#  created_at    :datetime
-#  updated_at    :datetime
+#  id             :integer(4)      not null, primary key
+#  village_id     :integer(4)
+#  legende        :string(255)
+#  info           :string(255)
+#  url_originale  :string(255)
+#  actif          :boolean(1)      default(TRUE)
+#  created_at     :datetime
+#  updated_at     :datetime
+#  url_definitive :string(255)
 #
 

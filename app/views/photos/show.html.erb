@@ -13,8 +13,8 @@
 
 <p>
   <b>Url originale:</b>
-  <%= @photo.url_originale %>
-  <%= image_tag("/images/originales/#{@photo.url_originale}") %>
+  <%= @photo.url_originale %><br />
+  <%= image_tag(@photo.url_fichier_photo_web) %>
   
 </p>
 
