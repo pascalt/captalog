@@ -171,8 +171,8 @@ describe PhotosController do
     
     before(:each) do
       @village = Factory(:village)
-      FileUtils.rm_r(ELEMENTS_DIR) #nettoyage du répertoire des éléments
-      Dir.mkdir(ELEMENTS_DIR) #création du répertoire des éléments
+      FileUtils.rm_r(DIR_VILLAGES) #nettoyage du répertoire des éléments
+      Dir.mkdir(DIR_VILLAGES) #création du répertoire des éléments
       @village.cree_repertoires #création des répertoires du village
       attr = {:url_originale => "photo.jpg", :village_id => @village.id }
       @photo = Photo.create!(attr)
@@ -215,7 +215,7 @@ describe PhotosController do
     
     it "ne devrait pas  présenter le upload de fichier de photo originale si la photo définitive existe" do
       FileUtils.cp "#{Rails.root.to_s}/public/test/zizi.jpg", 
-      "#{ELEMENTS_DIR}/#{@village.dir_nom}#{PHOTOS_DEFINITIVES_DIR}/#{@photo.prefix}_def.jpg"
+      "#{DIR_VILLAGES}/#{@village.dir_nom}/#{DIR_PHOTOS}/#{DIR_TYPE_PHOTO[:def]}/#{@photo.prefix}_def.jpg"
       get :edit, :id => @photo
       response.should_not have_selector("input", :id =>  "photo_url_originale")
     end
@@ -225,9 +225,9 @@ describe PhotosController do
     
     before(:each) do
       @village = Factory(:village) # création de village de référence pour la photo
-      FileUtils.rm_r(ELEMENTS_DIR) #nettoyage du répertoire des éléments
-      Dir.mkdir(ELEMENTS_DIR) #création du répertoire des éléments
-      FileUtils.cp "#{Rails.root.to_s}/public/test/Zouzou.jpg", "#{ELEMENTS_DIR}/Zouzou.jpg" #copie du fichier tmp de simulation d'upload
+      FileUtils.rm_r(DIR_VILLAGES) #nettoyage du répertoire des éléments
+      Dir.mkdir(DIR_VILLAGES) #création du répertoire des éléments
+      FileUtils.cp "#{Rails.root.to_s}/public/test/Zouzou.jpg", "#{DIR_VILLAGES}/Zouzou.jpg" #copie du fichier tmp de simulation d'upload
       @village.cree_repertoires #création des répertoires du village
       
     end
@@ -248,7 +248,7 @@ describe PhotosController do
     end
     
     it ",avec absence de répertoires pour les photos, devrait rediriger vers l'initialisation des répertoires" do 
-      FileUtils.rm_r(ELEMENTS_DIR + "/" + @village.dir_nom + PHOTOS_DIR)
+      FileUtils.rm_r(DIR_VILLAGES + "/" + @village.dir_nom + "/" + DIR_PHOTOS)
       get :new, :village_id => @village
       response.should redirect_to(init_repertoires_village_path(@village))
     end
@@ -287,10 +287,10 @@ describe PhotosController do
     describe "réussi" do
       
       before(:each) do
-        FileUtils.remove_dir(ELEMENTS_DIR)
-        Dir.mkdir(ELEMENTS_DIR)
-        FileUtils.cp "#{Rails.root.to_s}/public/test/Zouzou.jpg", "#{ELEMENTS_DIR}/Zouzou.jpg"
-        @attr = { :url_originale => "#{ELEMENTS_DIR}/Zouzou.jpg", :actif => true, :village_id => @village.id }
+        FileUtils.remove_dir(DIR_VILLAGES)
+        Dir.mkdir(DIR_VILLAGES)
+        FileUtils.cp "#{Rails.root.to_s}/public/test/Zouzou.jpg", "#{DIR_VILLAGES}/Zouzou.jpg"
+        @attr = { :url_originale => "#{DIR_VILLAGES}/Zouzou.jpg", :actif => true, :village_id => @village.id }
         @village.cree_repertoires
       end
       
@@ -315,19 +315,19 @@ describe PhotosController do
       it "devrait créer et bien nommer le fichier photo originale" do
         post :create, :photo => @attr, :village_id => @village.id
         @photo = Photo.find_by_url_originale(@attr[:url_originale])
-        File.file?(@photo.nom_fichier_photo_originale).should be_true
-        File.file?(@photo.nom_fichier_photo_vignette).should be_true
-        File.file?(@photo.nom_fichier_photo_web).should be_true
+        File.file?(@photo.fichier_photo(:ori, @photo.actif)).should be_true
+        File.file?(@photo.fichier_photo(:vig, @photo.actif)).should be_true
+        File.file?(@photo.fichier_photo(:web, @photo.actif)).should be_true
       end
       
       it "devrait créer et bien nommer les fichiers photo définitive, vignette et web" do
-        FileUtils.cp "#{Rails.root.to_s}/public/test/zizi.jpg", "#{ELEMENTS_DIR}/zizi.jpg"
-        @attr.merge!(:url_definitive => "#{ELEMENTS_DIR}/zizi.jpg")
+        FileUtils.cp "#{Rails.root.to_s}/public/test/zizi.jpg", "#{DIR_VILLAGES}/zizi.jpg"
+        @attr.merge!(:url_definitive => "#{DIR_VILLAGES}/zizi.jpg")
         post :create, :photo => @attr, :village_id => @village.id
         @photo = Photo.find_by_url_originale(@attr[:url_originale])
-        File.file?(@photo.nom_fichier_photo_definitive).should be_true
-        File.file?(@photo.nom_fichier_photo_vignette).should be_true
-        File.file?(@photo.nom_fichier_photo_web).should be_true
+        File.file?(@photo.fichier_photo(:def, @photo.actif)).should be_true
+        File.file?(@photo.fichier_photo(:vig, @photo.actif)).should be_true
+        File.file?(@photo.fichier_photo(:web, @photo.actif)).should be_true
         
       end
         
@@ -363,11 +363,11 @@ describe PhotosController do
     describe "réussi" do
       
       before(:each) do
-        FileUtils.remove_dir(ELEMENTS_DIR)
-        Dir.mkdir(ELEMENTS_DIR)
-        FileUtils.cp "#{Rails.root.to_s}/public/test/Zouzou.jpg", "#{ELEMENTS_DIR}/Zouzou.jpg"
+        FileUtils.remove_dir(DIR_VILLAGES)
+        Dir.mkdir(DIR_VILLAGES)
+        FileUtils.cp "#{Rails.root.to_s}/public/test/Zouzou.jpg", "#{DIR_VILLAGES}/Zouzou.jpg"
         @village.cree_repertoires
-        @attr = { :url_originale => "#{ELEMENTS_DIR}/Zouzou.jpg", :actif => true}
+        @attr = { :url_originale => "#{DIR_VILLAGES}/Zouzou.jpg", :actif => true}
       end
       
       it "devrait changer les attributs de la photo" do
@@ -394,18 +394,18 @@ describe PhotosController do
       it "avec une photo originale à remplacer, devrait créer le nouveau fichier et bien le nommer" do
         #copie de fichier qui sera remplacé
         FileUtils.cp "#{Rails.root.to_s}/public/test/zizi.jpg", 
-                     "#{ELEMENTS_DIR}/#{@village.dir_nom}#{PHOTOS_ORIGINALES_DIR}/#{@photo.prefix}_originale.jpg"
+                     "#{DIR_VILLAGES}/#{@village.dir_nom}/#{DIR_PHOTOS}/#{DIR_TYPE_PHOTO[:ori]}/#{@photo.prefix}_originale.jpg"
         put :update, :id => @photo, :photo => @attr
-        FileUtils.compare_file("#{Rails.root.to_s}/public/test/Zouzou.jpg", @photo.nom_fichier_photo_originale).should be_true
+        FileUtils.compare_file("#{Rails.root.to_s}/public/test/Zouzou.jpg", @photo.fichier_photo(:ori, @photo.actif)).should be_true
       end
       
       it "avec une photo définitive à remplacer, devrait créer le nouveau fichier et bien le nommer" do
         #copie de fichier qui sera remplacé
         FileUtils.cp "#{Rails.root.to_s}/public/test/zizi.jpg", 
-                     "#{ELEMENTS_DIR}/#{@village.dir_nom}#{PHOTOS_DEFINITIVES_DIR}/#{@photo.prefix}_def.jpg"
-        @attr.merge!({ :url_originale => "photo.jpg", :url_definitive => "#{ELEMENTS_DIR}/Zouzou.jpg" })
+                     "#{DIR_VILLAGES}/#{@village.dir_nom}/#{DIR_PHOTOS}/#{DIR_TYPE_PHOTO[:def]}/#{@photo.prefix}_def.jpg"
+        @attr.merge!({ :url_originale => "photo.jpg", :url_definitive => "#{DIR_VILLAGES}/Zouzou.jpg" })
         put :update, :id => @photo, :photo => @attr
-        FileUtils.compare_file("#{Rails.root.to_s}/public/test/Zouzou.jpg", @photo.nom_fichier_photo_definitive).should be_true
+        FileUtils.compare_file("#{Rails.root.to_s}/public/test/Zouzou.jpg", @photo.fichier_photo(:def, @photo.actif)).should be_true
        end
       
     end
@@ -458,19 +458,23 @@ describe PhotosController do
         @photo.reload.actif.should be_false
       end
 
-      it "devrait placer les photos dans le répertoire desavtive" do
-        FileUtils.remove_dir(ELEMENTS_DIR)
-        Dir.mkdir(ELEMENTS_DIR)
+      it "devrait placer les photos dans le répertoire desactivées" do
+        
+        FileUtils.remove_dir(DIR_VILLAGES)
+        Dir.mkdir(DIR_VILLAGES)
         @village.cree_repertoires
-        FileUtils.cp "#{Rails.root.to_s}/public/test/Zouzou.jpg", @photo.nom_fichier_photo_originale
-        FileUtils.cp "#{Rails.root.to_s}/public/test/Zouzou.jpg", @photo.nom_fichier_photo_definitive
-        FileUtils.cp "#{Rails.root.to_s}/public/test/Zouzou.jpg", @photo.nom_fichier_photo_web
-        FileUtils.cp "#{Rails.root.to_s}/public/test/Zouzou.jpg", @photo.nom_fichier_photo_vignette
+        FIC_EXT.keys.each do |type_photo|
+          FileUtils.cp "#{Rails.root.to_s}/public/test/Zouzou.jpg", @photo.fichier_photo(type_photo, @photo.actif)
+        end
+        
         get :active_bascule, :id => @photo
-        File.file?(@photo.nom_fichier_photo_desactive_originale).should be_true
-        File.file?(@photo.nom_fichier_photo_desactive_definitive).should be_true
-        File.file?(@photo.nom_fichier_photo_desactive_web).should be_true
-        File.file?(@photo.nom_fichier_photo_desactive_vignette).should be_true
+        
+        @photo.reload.actif.should be_false
+        
+        FIC_EXT.keys.each do |type_photo|
+          File.file?(@photo.fichier_photo(type_photo, false)).should be_true
+        end
+
       end
 
     

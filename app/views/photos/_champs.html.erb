@@ -1,6 +1,6 @@
 <%= render 'erreur'%>
 
-<%unless @photo.fichier_photo_definitive_existe?%>
+<%unless @photo.fichier_photo_existe?(:def)%>
   Photo originale:
   <div class="field">
   <%= f.file_field :url_originale %>

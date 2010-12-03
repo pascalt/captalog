@@ -23,6 +23,23 @@ class Photo < ActiveRecord::Base
   scope :actives, where("actif = ?", true)
   scope :non_actives, where("actif = ?", false)
   
+  
+  def sauve_enregistrement_photo_et_cree_fichiers
+    if self.save
+      cree_fichier_photo(:ori)
+      cree_fichier_photo(:def) unless url_definitive.blank?
+    end
+    return errors.empty?
+  end
+  
+  def update_enregistrement_photo_et_update_fichiers(params, ecrase_fichier)
+    if self.update_attributes(params[:photo])
+      [:ori, :def].each {|type| cree_fichier_photo(type) if ecrase_fichier[type]}
+    end
+    return errors.empty?
+  end
+  
+  
   def prefix
     "#{village.nc}_#{id.to_s.rjust(5,'0')}"
   end
@@ -33,121 +50,52 @@ class Photo < ActiveRecord::Base
     self.save
   end
   
-  def active_bascule_fichiers_photos
-    if actif
-      FileUtils.mv nom_fichier_photo_desactive_originale, nom_fichier_photo_originale if File.file?(nom_fichier_photo_desactive_originale)
-      FileUtils.mv nom_fichier_photo_desactive_definitive, nom_fichier_photo_definitive if File.file?(nom_fichier_photo_desactive_definitive)
-      FileUtils.mv nom_fichier_photo_desactive_vignette, nom_fichier_photo_vignette if File.file?(nom_fichier_photo_desactive_vignette)
-      FileUtils.mv nom_fichier_photo_desactive_web, nom_fichier_photo_web if File.file?(nom_fichier_photo_desactive_web)
-    else
-      FileUtils.mv nom_fichier_photo_originale, nom_fichier_photo_desactive_originale if File.file?(nom_fichier_photo_originale)
-      FileUtils.mv nom_fichier_photo_definitive, nom_fichier_photo_desactive_definitive if File.file?(nom_fichier_photo_definitive)
-      FileUtils.mv nom_fichier_photo_vignette, nom_fichier_photo_desactive_vignette if File.file?(nom_fichier_photo_vignette)
-      FileUtils.mv nom_fichier_photo_web, nom_fichier_photo_desactive_web if File.file?(nom_fichier_photo_web)
-     end
+  def active_bascule_fichiers_photos    
+    FIC_EXT.keys.each do |type_photo|
+      FileUtils.mv fichier_photo(type_photo, !actif), fichier_photo(type_photo, actif) if File.file?(fichier_photo(type_photo, !actif))
+    end
   end
   
-  def nom_fichier_photo_originale
-    "#{ELEMENTS_DIR}/#{village.dir_nom}#{PHOTOS_ORIGINALES_DIR}/#{prefix}_originale.jpg"
-  end
-
-  def nom_fichier_photo_definitive
-    "#{ELEMENTS_DIR}/#{village.dir_nom}#{PHOTOS_DEFINITIVES_DIR}/#{prefix}_def.jpg"
+  def fichier_photo(type_photo, photo_active)
+    "#{DIR_VILLAGES}/#{village.dir_nom}/#{DIR_PHOTOS}/#{DIR_DESACTIVEES + "/" if !photo_active}#{DIR_TYPE_PHOTO[type_photo]}/#{prefix}#{FIC_EXT[type_photo]}.jpg"
   end
   
-  def nom_fichier_photo_vignette
-    "#{ELEMENTS_DIR}/#{village.dir_nom}#{PHOTOS_VIGNETTES_DIR}/#{prefix}_vignette.jpg"
+  def url_photo(type_photo)
+    "#{URL_VILLAGES}/#{village.dir_nom}/#{DIR_PHOTOS}/#{DIR_TYPE_PHOTO[type_photo]}/#{prefix}#{FIC_EXT[type_photo]}.jpg"
   end
   
-  def nom_fichier_photo_web
-    "#{ELEMENTS_DIR}/#{village.dir_nom}#{PHOTOS_WEB_DIR}/#{prefix}_web.jpg"
+  def fichier_photo_existe?(type_photo)
+    File.file?(fichier_photo(type_photo, actif))
   end
   
-  def url_fichier_photo_originale
-    "#{ELEMENTS_URL}/#{village.dir_nom}#{PHOTOS_DEFINITIVES_DIR}/#{prefix}_originale.jpg"
-  end
-  
-  def url_fichier_photo_definitive
-    "#{ELEMENTS_URL}/#{village.dir_nom}#{PHOTOS_DEFINITIVES_DIR}/#{prefix}_def.jpg"
-  end
-  
-  def url_fichier_photo_vignette
-    "#{ELEMENTS_URL}/#{village.dir_nom}#{PHOTOS_VIGNETTES_DIR}/#{prefix}_vignette.jpg"
-  end
-
-  def url_fichier_photo_web
-    "#{ELEMENTS_URL}/#{village.dir_nom}#{PHOTOS_WEB_DIR}/#{prefix}_web.jpg"
-  end
-  
-  def nom_fichier_photo_desactive_originale
-    "#{ELEMENTS_DIR}/#{village.dir_nom}#{PHOTOS_DESACTIVEES_ORIGINALES_DIR}/#{prefix}_originale.jpg" 
-  end
-
-  def nom_fichier_photo_desactive_definitive
-    "#{ELEMENTS_DIR}/#{village.dir_nom}#{PHOTOS_DESACTIVEES_DEFINITIVES_DIR}/#{prefix}_def.jpg" 
-  end
-
-  def nom_fichier_photo_desactive_vignette
-    "#{ELEMENTS_DIR}/#{village.dir_nom}#{PHOTOS_DESACTIVEES_VIGNETTES_DIR}/#{prefix}_vignette.jpg" 
-  end
-  
-  def nom_fichier_photo_desactive_web
-    "#{ELEMENTS_DIR}/#{village.dir_nom}#{PHOTOS_DESACTIVEES_WEB_DIR}/#{prefix}_web.jpg" 
-  end
-  
-
-  def fichier_photo_definitive_existe?
-    File.file?(nom_fichier_photo_definitive)
-  end
-  
-  def cree_fichier_photo_originale
-    #crée le fichier de photo originale selon la convention de nomage des photos et sauve le nom de la photo original pour mémoire
-    tmp_nom_original = Rails.env.test? ? url_originale : url_originale.original_filename
-    FileUtils.mv url_originale, nom_fichier_photo_originale
-    self.url_originale = tmp_nom_original
-    save
+  def fabrique_fichier_photo(depuis_type_photo, vers_type_photo)
     
-    cree_fichier_photo_vignette('originale')
-    cree_fichier_photo_web('originale')
+    image = Magick::Image::read(fichier_photo(depuis_type_photo, actif)).first
+    
+    image.change_geometry!(LARGEUR[vers_type_photo]) { |cols, rows, img| img.resize!(cols, rows)}
+    image.write fichier_photo(vers_type_photo, actif)
+    
+  end
+  
+  def cree_fichier_photo(type_photo)
+    
+    if type_photo == :ori
+      tmp_nom_original = Rails.env.test? ? url_originale : url_originale.original_filename
+      FileUtils.mv url_originale, fichier_photo(:ori, actif)
+      self.url_originale = tmp_nom_original
+    elsif type_photo == :def
+      tmp_nom_definitive = Rails.env.test? ? url_definitive : url_definitive.original_filename
+      FileUtils.mv url_definitive, fichier_photo(:def, actif)
+      self.url_definitive = tmp_nom_definitive
+    end
+    
+    self.save
+    
+    fabrique_fichier_photo(type_photo, :vig)
+    fabrique_fichier_photo(type_photo, :web)
     
   end
 
-  def cree_fichier_photo_definitive
-    
-    #crée le fichier de photo définitive selon la convention de nomage des photos et sauve le nom de la photo définitive pour mémoire
-    tmp_nom_definitive = Rails.env.test? ? url_definitive : url_definitive.original_filename
-    FileUtils.mv url_definitive, nom_fichier_photo_definitive
-    self.url_definitive = tmp_nom_definitive
-    save
-    
-    cree_fichier_photo_vignette('definitive')
-    cree_fichier_photo_web('definitive')
-    
-  end
-  
-  def cree_fichier_photo_vignette(type_photo)
-    
-    nom_fichier_photo = nom_fichier_photo_definitive if type_photo == 'definitive'
-    nom_fichier_photo = nom_fichier_photo_originale if type_photo == 'originale'
-
-    image = Magick::Image::read(nom_fichier_photo).first
-    
-    image.change_geometry!('100') { |cols, rows, img| img.resize!(cols, rows)}
-    image.write nom_fichier_photo_vignette
-  end
-  
-  def cree_fichier_photo_web(type_photo)
-    
-    nom_fichier_photo = nom_fichier_photo_definitive if type_photo == 'definitive'
-    nom_fichier_photo = nom_fichier_photo_originale if type_photo == 'originale'
-    
-    image = Magick::Image::read(nom_fichier_photo).first
-    
-    image.change_geometry!('640') { |cols, rows, img| img.resize!(cols, rows)}
-    image.write nom_fichier_photo_web
-  end
-  
-  
 end
 
 

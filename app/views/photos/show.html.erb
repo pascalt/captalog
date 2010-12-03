@@ -14,7 +14,7 @@
 <p>
   <b>Url originale:</b>
   <%= @photo.url_originale %><br />
-  <%= image_tag(@photo.url_fichier_photo_web) %>
+  <%= image_tag(@photo.url_photo(:web)) %>
   
 </p>
 

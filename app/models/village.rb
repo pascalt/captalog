@@ -56,7 +56,7 @@ class Village < ActiveRecord::Base
   
   # existence du répertoire ?
   def dir_existe?
-    Dir.entries(ELEMENTS_DIR).include?(dir_nom)
+    Dir.entries(DIR_VILLAGES).include?(dir_nom)
   end
   
   # construction des nom des répertoires 
@@ -65,30 +65,31 @@ class Village < ActiveRecord::Base
   end
   
   def liste_des_repertoires
-    [ ELEMENTS_DIR + "/" + dir_nom, 
-      ELEMENTS_DIR + "/" + dir_nom + PHOTOS_DIR, 
-      ELEMENTS_DIR + "/" + dir_nom + PHOTOS_DIR + DESACTIVEES_DIR, 
-      ELEMENTS_DIR + "/" + dir_nom + CARTES_DIR, 
-      ELEMENTS_DIR + "/" + dir_nom + PHOTOS_ORIGINALES_DIR,
-      ELEMENTS_DIR + "/" + dir_nom + PHOTOS_DEFINITIVES_DIR, 
-      ELEMENTS_DIR + "/" + dir_nom + PHOTOS_VIGNETTES_DIR, 
-      ELEMENTS_DIR + "/" + dir_nom + PHOTOS_WEB_DIR,
-      ELEMENTS_DIR + "/" + dir_nom + PHOTOS_DESACTIVEES_ORIGINALES_DIR,
-      ELEMENTS_DIR + "/" + dir_nom + PHOTOS_DESACTIVEES_DEFINITIVES_DIR, 
-      ELEMENTS_DIR + "/" + dir_nom + PHOTOS_DESACTIVEES_VIGNETTES_DIR, 
-      ELEMENTS_DIR + "/" + dir_nom + PHOTOS_DESACTIVEES_WEB_DIR ]
+
+    racine_village = "#{DIR_VILLAGES}/#{dir_nom}"
+  
+    liste = ["#{racine_village}/#{DIR_PHOTOS}", "#{racine_village}/#{DIR_CARTES}", 
+           "#{racine_village}/#{DIR_PHOTOS}/#{DIR_DESACTIVEES}"]
+  
+    DIR_TYPE_PHOTO.each {|cle, rep| liste << "#{racine_village}/#{DIR_PHOTOS}/#{rep}" << "#{racine_village}/#{DIR_PHOTOS}/#{DIR_DESACTIVEES}/#{rep}"}
+  
+    return liste
+  
   end
   
   # création des répertoires
   def cree_repertoires
-    liste_des_repertoires.each {|rep| FileUtils.mkdir_p(rep)}
- end
- 
- def repertoires_existent?
     
-   liste_des_repertoires.each {|rep| @reponse &&= File.directory?(rep)} if (@reponse = !nc.blank?) #l'affectation est voulue
-   return @reponse
- end
+    liste_des_repertoires.each { |rep| FileUtils.mkdir_p(rep)}
+    
+  end
+ 
+  def repertoires_existent?
+    
+    liste_des_repertoires.each {|rep| @reponse &&= File.directory?(rep)} if (@reponse = !nc.blank?) #l'affectation est voulue
+    return @reponse
+    
+  end
  
   def reactive_et_enregistre
     self.actif = true

@@ -1,5 +1,4 @@
 <%= render 'nav_index' %>
-<p id="notice"><%= notice %></p>
 <h1><%=@titre%></h1>
 
 <table>
@@ -18,7 +17,7 @@
 
 <% @photos.each do |photo| %>
   <tr>
-    <td><%= image_tag(photo.url_fichier_photo_vignette) %></td>
+    <td><%= image_tag(photo.url_photo(:vig)) %></td>
     <td><%= photo.village.nom %></td>
     <td><%= photo.prefix %></td>
     <td><%= photo.url_originale %></td>

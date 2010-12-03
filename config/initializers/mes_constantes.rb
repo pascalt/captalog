@@ -1,20 +1,8 @@
-ELEMENTS_DIR            = "#{Rails.root.to_s}/public#{"/test" if Rails.env.test?}/elements"
-ELEMENTS_URL            = "#{"/test" if Rails.env.test?}/elements"
-CARTES_DIR              = "/cartes"
-PHOTOS_DIR              = "/photos"
-ORIGINALES_DIR          = "originale"
-DEFINITIVES_DIR         = "def"
-VIGNETTES_DIR           = "vignette"
-WEB_DIR                 = "web"
-DESACTIVEES_DIR          = "/desactivees"
-
-PHOTOS_ORIGINALES_DIR   = "#{PHOTOS_DIR}/#{ORIGINALES_DIR} "
-PHOTOS_DEFINITIVES_DIR  = "#{PHOTOS_DIR}/#{DEFINITIVES_DIR}"
-PHOTOS_VIGNETTES_DIR    = "#{PHOTOS_DIR}/#{VIGNETTES_DIR}"
-PHOTOS_WEB_DIR          = "#{PHOTOS_DIR}/#{WEB_DIR}"
-
-PHOTOS_DESACTIVEES_ORIGINALES_DIR   = "#{PHOTOS_DIR}#{DESACTIVEES_DIR}/#{ORIGINALES_DIR} "
-PHOTOS_DESACTIVEES_DEFINITIVES_DIR  = "#{PHOTOS_DIR}#{DESACTIVEES_DIR}/#{DEFINITIVES_DIR}"
-PHOTOS_DESACTIVEES_VIGNETTES_DIR    = "#{PHOTOS_DIR}#{DESACTIVEES_DIR}/#{VIGNETTES_DIR}"
-PHOTOS_DESACTIVEES_WEB_DIR          = "#{PHOTOS_DIR}#{DESACTIVEES_DIR}/#{WEB_DIR}"
-
+URL_VILLAGES          = "/#{"test/" if Rails.env.test?}elements"
+DIR_VILLAGES          = "#{Rails.root.to_s}/public#{URL_VILLAGES}"
+FIC_EXT               = {:ori => '_ori', :def => '_def', :vig => '_vig', :web => '_web'}
+DIR_TYPE_PHOTO        = {:ori => 'originale', :def => 'def', :vig => 'vignette', :web => 'web'}
+DIR_PHOTOS            = 'photos'
+DIR_DESACTIVEES       = 'desactivees'
+DIR_CARTES            = 'cartes'
+LARGEUR               = {:vig => '100', :web => '320'}

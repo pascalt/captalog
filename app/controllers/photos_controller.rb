@@ -48,9 +48,7 @@ class PhotosController < ApplicationController
     
     @titre = "Nouvelle photo pour : " + @village.nom
     
-    if @photo.save
-      @photo.cree_fichier_photo_originale
-      @photo.cree_fichier_photo_definitive unless @photo.url_definitive.blank?
+    if @photo.sauve_enregistrement_photo_et_cree_fichiers
       redirect_to([@village, @photo], :notice => 'La photo a bien été créée.')
     else
       render :new
@@ -64,12 +62,10 @@ class PhotosController < ApplicationController
     @village = Village.find_by_id(params[:village_id])
     @titre = "Editer photo : " + @photo.prefix
     
-    change_url_originale = (@photo.url_originale != params[:photo][:url_originale]) && !params[:photo][:url_originale].blank?
-    change_url_definitive = (@photo.url_definitive != params[:photo][:url_definitive]) && !params[:photo][:url_definitive].blank?
+    ecrase_fichier = {:ori => (@photo.url_originale != params[:photo][:url_originale]) && !params[:photo][:url_originale].blank?,
+                      :def => (@photo.url_definitive != params[:photo][:url_definitive]) && !params[:photo][:url_definitive].blank?}
     
-    if @photo.update_attributes(params[:photo])
-      @photo.cree_fichier_photo_originale if change_url_originale
-      @photo.cree_fichier_photo_definitive if change_url_definitive
+    if @photo.update_enregistrement_photo_et_update_fichiers(params, ecrase_fichier)
       redirect_to([@village, @photo], :notice => 'La photo a bien été modifiée.')
     else
       render :edit 
