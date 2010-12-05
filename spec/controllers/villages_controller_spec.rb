@@ -175,6 +175,7 @@ describe VillagesController do
       
       before(:each) do
         FileUtils.remove_dir(DIR_VILLAGES)
+        FileUtils.remove_dir(DIR_SUPPR)
         Dir.mkdir(DIR_VILLAGES)
         @attr = { :nom_sa => "Village Zouzou", :article => "Le", :type_village => "campagne", 
                   :nc => "villagezouzou", :latitude => "0.12", :longitude => "0.14", :rue => "33bis rue pluf", :ville => "Saint-Charmant",
@@ -225,11 +226,25 @@ describe VillagesController do
       response.should redirect_to(villages_path)
     end
     
-    it "doit éliminer le village avec ses photos" do
-      Photo.create!(:url_originale => "photo1.jpg", :village_id => @village.id)
-      Photo.create!(:url_originale => "photo2.jpg", :village_id => @village.id)
+    it "doit éliminer le répertoire du village avec ses photos" do
+      FileUtils.remove_dir(DIR_VILLAGES)
+      FileUtils.remove_dir(DIR_SUPPR)      
+      Dir.mkdir(DIR_VILLAGES)
+      FileUtils.cp "#{Rails.root.to_s}/public/test/Zouzou.jpg", "#{DIR_VILLAGES}/Zouzou.jpg"
+      FileUtils.cp "#{Rails.root.to_s}/public/test/zizi.jpg", "#{DIR_VILLAGES}/zizi.jpg"
+      @village.cree_repertoires
+      tmp_repertoire_village = DIR_VILLAGES + "/" + @village.dir_nom
+      photo = []
+      photo[1] = Photo.create!(:url_originale => "#{DIR_VILLAGES}/Zouzou.jpg", :village_id => @village.id)
+      photo[2] = Photo.create!(:url_originale => "#{DIR_VILLAGES}/zizi.jpg", :village_id => @village.id)
+      tmp_village_id = @village.id
+      tmp_fichier_photo_supprimee = []
+      [1,2].each {|i| tmp_fichier_photo_supprimee[i] = {}}
+      [1,2].each {|i| FIC_EXT.keys.each {|type| tmp_fichier_photo_supprimee[i][type] = photo[i].fichier_photo(type)}}
       delete :destroy, :id => @village
-      Photo.find_by_village_id(@village.id).should be_nil
+      Photo.find_by_village_id(tmp_village_id).should be_nil
+      [1,2].each {|i| FIC_EXT.keys.each {|type| File.file?(tmp_fichier_photo_supprimee[i][type]).should be_false}}
+      File.directory?(tmp_repertoire_village).should be_false
     end
      
   end
@@ -261,6 +276,14 @@ describe VillagesController do
 
       before(:each) do
         @attr = { :actif => false, :date_sortie => "11/09/2010"}
+        FileUtils.remove_dir(DIR_VILLAGES)
+        FileUtils.remove_dir(DIR_SUPPR)
+        Dir.mkdir(DIR_VILLAGES)
+        Photo.create!(:url_originale => 'bidon.jpg', :village_id => @village.id)
+        @village.cree_repertoires
+        FIC_EXT.keys.each do |type_photo|
+          FileUtils.cp "#{Rails.root.to_s}/public/test/Zouzou.jpg", @village.photos.first.fichier_photo(type_photo)
+        end
       end
 
       it "devrait avoir une date de sortie et avoir actif à faux" do
@@ -278,6 +301,15 @@ describe VillagesController do
       it "devrais avoir un message flash" do
         put :update_desactive, :id => @village, :village => @attr
         flash[:notice].should =~ /désactivé/
+      end
+      
+      it "devrait déplacer toutes les photos" do
+        put :update_desactive, :id => @village, :village => @attr
+        @village.reload
+        @village.actif.should be_false
+        FIC_EXT.keys.each do |type_photo|
+          File.file?(@village.photos.first.fichier_photo(type_photo)).should be_true
+        end
       end
 
   end

@@ -14,6 +14,9 @@ class Village < ActiveRecord::Base
   validate  :doit_avoir_un_nc_valide,
             :ne_peut_pas_etre_non_actif_sans_date_de_sortie, 
             :ne_peut_pas_etre_actif_avec_une_date_de_sortie
+            
+  after_destroy :supprime_repertoires_villages
+  
   
   def nc_non_blank
     !nc.blank?
@@ -64,14 +67,19 @@ class Village < ActiveRecord::Base
     nc
   end
   
+  def racine_village
+    "#{DIR_VILLAGES}/#{dir_nom}"
+  end
+  
   def liste_des_repertoires
-
-    racine_village = "#{DIR_VILLAGES}/#{dir_nom}"
+    
+    liste = [DIR_SUPPR, "#{DIR_VILLAGES}/#{DIR_VILLAGES_DESACTI}", "#{racine_village}/#{DIR_PHOTOS}", "#{racine_village}/#{DIR_CARTES}", 
+             "#{racine_village}/#{DIR_PHOTOS}/#{DIR_PHOTOS_DESACTI}"]
   
-    liste = ["#{racine_village}/#{DIR_PHOTOS}", "#{racine_village}/#{DIR_CARTES}", 
-           "#{racine_village}/#{DIR_PHOTOS}/#{DIR_DESACTIVEES}"]
-  
-    DIR_TYPE_PHOTO.each {|cle, rep| liste << "#{racine_village}/#{DIR_PHOTOS}/#{rep}" << "#{racine_village}/#{DIR_PHOTOS}/#{DIR_DESACTIVEES}/#{rep}"}
+    DIR_TYPE_PHOTO.each do |cle, rep| 
+      liste << "#{racine_village}/#{DIR_PHOTOS}/#{rep}" << "#{racine_village}/#{DIR_PHOTOS}/#{DIR_PHOTOS_DESACTI}/#{rep}"
+    end
+      
   
     return liste
   
@@ -90,11 +98,37 @@ class Village < ActiveRecord::Base
     return @reponse
     
   end
+  
+  def supprime_repertoires_villages
+    FileUtils.remove_dir(racine_village) if File.directory?(racine_village)
+    FileUtils.remove_dir("#{DIR_VILLAGES}/#{DIR_VILLAGES_DESACTI}") if File.directory?("#{DIR_VILLAGES}/#{DIR_VILLAGES_DESACTI}")
+  end
  
+  def deseactive_et_enregistre(params)
+    update_attributes(params[:village])
+    deplace_fichier_village_desactive
+    return errors.empty?
+  end
+
   def reactive_et_enregistre
     self.actif = true
     self.date_sortie = nil
     self.save
+    deplace_fichier_village_desactive :envers
+    return errors.empty?
+  end
+  
+  def deplace_fichier_village_desactive(sens=nil)
+    
+    if sens.nil?
+      source      = "#{DIR_VILLAGES}/#{dir_nom}"
+      destination = "#{DIR_VILLAGES}/#{DIR_VILLAGES_DESACTI}"
+    else
+      source      = "#{DIR_VILLAGES}/#{DIR_VILLAGES_DESACTI}/#{dir_nom}"
+      destination = "#{DIR_VILLAGES}"
+    end
+    FileUtils.cp_r source, destination
+    FileUtils.rm_r source
   end
   
 

@@ -101,7 +101,8 @@ class VillagesController < ApplicationController
     @titre = "Désactiver " + @village.nom
 
     # enregistre la desactivation du village
-    if @village.update_attributes(params[:village])
+#    if @village.update_attributes(params[:village])
+     if @village.deseactive_et_enregistre(params)
        redirect_to(@village, :notice => "#{@village.nom} a bien été désactivé.")
     else
       render :action => "desactive"
