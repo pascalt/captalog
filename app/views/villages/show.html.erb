@@ -1,3 +1,4 @@
+<%= render 'nav_show' %>
 <h1><%=@titre%></h1>
 
 <p>
@@ -33,8 +34,6 @@
   <%= @village.date_sortie.strftime('%d/%m/%Y') if @village.date_sortie%>
 </p>
 <%end%>
+<%= render 'nav_show' %>
 
 
-<%= link_to 'Photos', village_photos_path(@village) %> |
-<%= link_to 'Editer', edit_village_path(@village) %> |
-<%= link_to 'Retour', villages_path %>

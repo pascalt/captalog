@@ -61,12 +61,12 @@ class Photo < ActiveRecord::Base
     end
   end
   
-  def fichier_photo(type_photo, photo_active=self.actif)
+  def fichier_photo(type_photo, photo_active = self.actif)
     "#{DIR_VILLAGES}/#{DIR_VILLAGES_DESACTI + "/" if !village.actif}#{village.dir_nom}/#{DIR_PHOTOS}/#{DIR_PHOTOS_DESACTI + "/" if !photo_active}#{DIR_TYPE_PHOTO[type_photo]}/#{prefix}#{FIC_EXT[type_photo]}.jpg"
   end
   
   def url_photo(type_photo)
-    "#{URL_VILLAGES}/#{village.dir_nom}/#{DIR_PHOTOS}/#{DIR_TYPE_PHOTO[type_photo]}/#{prefix}#{FIC_EXT[type_photo]}.jpg"
+    "#{URL_VILLAGES}/#{DIR_VILLAGES_DESACTI + "/" if !village.actif}#{village.dir_nom}/#{DIR_PHOTOS}/#{DIR_PHOTOS_DESACTI + "/" if !actif}#{DIR_TYPE_PHOTO[type_photo]}/#{prefix}#{FIC_EXT[type_photo]}.jpg"
   end
   
   def fichier_photo_existe?(type_photo)

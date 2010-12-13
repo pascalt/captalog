@@ -2,30 +2,10 @@
 <h1><%=@titre%></h1>
 
 <table>
-  <tr>
-    <th></th>
-    <th>Village</th>
-    <th>Préfix</th>
-    <th>Url originale</th>
-    <th>Legende</th>
-    <th>Info</th>
-    <th></th>
-    <th></th>
-    <th></th>
-    <th></th>
-  </tr>
 
 <% @photos.each do |photo| %>
   <tr>
-    <td><%= image_tag(photo.url_photo(:vig)) %></td>
-    <td><%= photo.village.nom %></td>
-    <td><%= photo.prefix %></td>
-    <td><%= photo.url_originale %></td>
-    <td><%= photo.legende %></td>
-    <td><%= photo.info %></td>
-    <td><%= link_to 'Voir', [@village, photo] %></td>
-    <td><%= link_to 'Editer', @village ? edit_village_photo_path(@village, photo) : edit_photo_path(photo) %></td>
-    <td><%= link_to 'Désactiver', @village ? active_bascule_village_photo_path(@village,photo) : active_bascule_photo_path(photo) %></td>
+    <%= render 'liste_champs', :photo => photo %>
   </tr>
 <% end %>
 </table>

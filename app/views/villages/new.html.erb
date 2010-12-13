@@ -1,3 +1,4 @@
+<%= render 'nav_champs' %>
 <h1><%=@titre%></h1>
 
 <%= form_for(@village) do |f| %>
@@ -7,4 +8,4 @@
   </div>
 <% end %>
 
-<%= link_to 'Back', villages_path %>
+<%= render 'nav_champs' %>

@@ -1,23 +1,34 @@
 <%= render 'erreur'%>
 
 <%unless @photo.fichier_photo_existe?(:def)%>
-  Photo originale:
+Charger une photo originale:
+<%= "Originale :" +  url_originale if url_originale %>
   <div class="field">
   <%= f.file_field :url_originale %>
   </div>
 <%end%>
 <br />
-Photo définitive:
+
+Charger une photo définitive:
 <div class="field">
 <%= f.file_field :url_definitive %>
 </div>
+<br />
+
+<p><%= "Originale :" +  @photo.url_originale if @photo.url_originale %></p>
+<p><%= "Définitive :" +  @photo.url_definitive if @photo.url_definitive %></p>
+
+
 <div class="field">
   <%= f.label :legende %><br />
   <%= f.text_field :legende %>
 </div>
+
 <div class="field">
   <%= f.label :info %><br />
   <%= f.text_field :info %>
 </div>
+
 <%= f.hidden_field :village_id %>
+
 <%= f.hidden_field :actif %>

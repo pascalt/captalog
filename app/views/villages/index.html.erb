@@ -1,13 +1,11 @@
 <%= render 'nav_index' %>
 <h1><%=@titre%></h1>
+
 <table>
 
 <% @villages.each do |village| %>
   <tr>
     <%= render 'liste_champs', :village => village %>
-    <td><%= link_to 'Voir', village %></td>
-    <td><%= link_to 'Editer', edit_village_path(village) %></td>
-    <td><%= link_to 'Désactiver', desactive_village_path(village) %></td>
   </tr>
 <% end %>
 </table>

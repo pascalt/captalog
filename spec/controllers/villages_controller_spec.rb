@@ -17,9 +17,9 @@ describe VillagesController do
       get 'index'
       response.should have_selector("title", :content => @titre_de_base + " | Villages Cap France")
     end
-    it "devrait avoir un retour sur le menu" do
+    it "devrait avoir un lien sur le menu" do
       get :index
-      response.should have_selector("a", :href => menu_path, :content => "Retour")
+      response.should have_selector("a", :href => menu_path, :content => "Menu")
     end
     it "ne devrait pas faire apparaitre de village désactivée" do
       @village = Factory(:village)
@@ -44,6 +44,26 @@ describe VillagesController do
     end
     
   end
+  
+  describe "le INDEX_NON_ACTIFS" do
+    
+    it "devrait réussir" do
+      get :index_non_actifs
+      response.should be_success
+    end
+    it "devrait avoir le bon titre" do
+      get :index_non_actifs
+      response.should have_selector("title", :content => @titre_de_base + " | Villages désactivés")
+    end
+    it "devrait avoir un retour vers la liste des villages actifs" do
+      @village = Factory(:village) #il existe au moins un village actif
+      get :index_non_actifs
+      response.should have_selector("a", :href => villages_path, :content => "actifs")
+    end
+        
+  end
+  
+  
   
   describe "le SHOW'" do
     
@@ -314,21 +334,5 @@ describe VillagesController do
 
   end
 
-  describe "le INDEX_NON_ACTIFS" do
-    
-    it "devrait réussir" do
-      get :index_non_actifs
-      response.should be_success
-    end
-    it "devrait avoir le bon titre" do
-      get :index_non_actifs
-      response.should have_selector("title", :content => @titre_de_base + " | Villages désactivés")
-    end
-    it "devrait avoir un retour vers la liste des villages actifs" do
-      get :index_non_actifs
-      response.should have_selector("a", :href => villages_path, :content => "Retour")
-    end
-        
-  end
   
 end

@@ -1,31 +1,15 @@
-<%= link_to 'Retour', @village ? village_photos_path(@village) : photos_path %>
+<%= render 'nav_index_non_actives' %>
 <h1><%=@titre%></h1>
 
 <table>
-  <tr>
-    <th>Village</th>
-    <th>Préfix</th>
-    <th>Url originale</th>
-    <th>Legende</th>
-    <th>Info</th>
-    <th></th>
-    <th></th>
-  </tr>
 
 <% @photos.each do |photo| %>
   <tr>
-    <td><%= photo.village.nom %></td>
-    <td><%= photo.prefix %></td>
-    <td><%= photo.url_originale %></td>
-    <td><%= photo.legende %></td>
-    <td><%= photo.info %></td>
-    <td><%= link_to 'Réactiver', @village ? active_bascule_village_photo_path(@village,photo) : active_bascule_photo_path(photo) %></td>
-    <td><%= link_to 'Suppr.', [@village, photo], :confirm => "Etes-vous certain de vouloir supprimer la photo : #{photo.prefix}?", 
-                                                 :method => :delete %></td>
+    <%= render 'liste_champs', :photo => photo %>
   </tr>
 <% end %>
 </table>
 
 <br />
-<%= link_to 'Retour', @village ? village_photos_path(@village) : photos_path %>
+<%= render 'nav_index_non_actives' %>
 

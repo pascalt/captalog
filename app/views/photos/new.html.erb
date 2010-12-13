@@ -1,3 +1,4 @@
+<%= render 'nav_champs'%>
 <h1><%=@titre%></h1>
 
 <%= form_for([@village, @photo], :html => {:multipart => true}) do |f| %>
@@ -7,4 +8,4 @@
   </div>
 <% end %>
 
-<%= link_to 'Retour', village_photos_path(@village) %>
+<%= render 'nav_champs'%>

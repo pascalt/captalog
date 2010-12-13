@@ -1,0 +1,9 @@
+<td><%= image_tag(photo.url_photo(:vig)) %></td>
+<td><%= photo.prefix %></td>
+<td><%= link_to 'Voir', [@village, photo] %></td>
+<td><%= link_to 'Editer', @village ? edit_village_photo_path(@village, photo) : edit_photo_path(photo) %></td>
+<td><%= link_to "#{photo.actif ? "Désactiver" : "Réactiver"}", @village ? active_bascule_village_photo_path(@village,photo) : active_bascule_photo_path(photo) %></td>
+<%if !photo.actif %>
+  <td><%= link_to 'Suppr.', [@village, photo], :confirm => "Etes-vous certain de vouloir supprimer la photo : #{photo.prefix}?", :method => :delete %></td>
+<%end%>
+

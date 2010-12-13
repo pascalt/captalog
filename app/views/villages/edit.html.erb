@@ -1,3 +1,4 @@
+<%= render 'nav_champs' %>
 <h1><%=@titre%></h1>
 <%= form_for(@village) do |f| %>
   <%= render 'champs', :f => f %>
@@ -5,5 +6,4 @@
      <%= f.submit "Modifier le village"%>
   </div>
 <% end %>
-<%= link_to 'Voir', @village %> |
-<%= link_to 'Retour', villages_path %>
+<%= render 'nav_champs' %>

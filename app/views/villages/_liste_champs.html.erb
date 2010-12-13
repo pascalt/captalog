@@ -3,7 +3,18 @@
 <%if village.dir_existe? %>
   <td><%=nc_ayant_un_repertoire(village)%></td>
 <%elsif village.actif%>
-  <td><%= link_to village.nc.blank? ? '>>>' : village.nc, init_repertoires_village_path(village) %></td>
+  <td><%= link_to village.nc.blank? ? 'Init.' : village.nc, init_repertoires_village_path(village) %></td>
 <%else%>
     <td><%= village.nc %></td>
 <%end%>
+<td><%= link_to 'Photos', village_photos_path(village) %></td>
+<td><%= link_to 'Voir', village %></td>
+<td><%= link_to 'Editer', edit_village_path(village) %></td>
+<% if village.actif%>
+  <td><%= link_to 'Désactiver', desactive_village_path(village) %></td>
+<%else%>
+  <td><%= link_to 'Réactiver', reactive_village_path(village) %></td>
+  <td><%= link_to 'Suppr.', village, :confirm => "Etes-vous certain de vouloir supprimer #{village.nom} et ses photos associées ?", :method => :delete %></td>
+  
+<%end%>
+

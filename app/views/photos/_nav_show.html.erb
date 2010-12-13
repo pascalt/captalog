@@ -1,0 +1,7 @@
+<%= link_to 'Menu', menu_path %> |
+<% if @photo.actif %>
+  <%= link_to 'Photos', @village ? village_photos_path(@village) : photos_path %> |
+<%else%>
+ <%= link_to 'Photos désactivées', @village ? index_non_actives_village_photos_path(@photo.village) : index_non_actives_photos_path%> |
+<%end%>
+<%= link_to 'Editer', @village ? edit_village_photo_path(@village, @photo) : edit_photo_path(@photo) %>

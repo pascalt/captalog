@@ -1,4 +1,7 @@
+<%= render 'nav_show'%>
 <h1><%=@titre%></h1>
+
+<%= image_tag(@photo.url_photo(:web)) %>
 
 <p>
   <b>Village:</b>
@@ -12,10 +15,13 @@
 
 
 <p>
-  <b>Url originale:</b>
-  <%= @photo.url_originale %><br />
-  <%= image_tag(@photo.url_photo(:web)) %>
-  
+  <b>Fichier photo originale:</b>
+  <%= @photo.url_originale %><br /> 
+</p>
+
+<p>
+  <b>Fichier photo définitive:</b>
+  <%= @photo.url_definitive %><br /> 
 </p>
 
 
@@ -29,12 +35,4 @@
   <%= @photo.info %>
 </p>
 
-
-<p>
-  <b>Actif:</b>
-  <%= @photo.actif %>
-</p>
-
-
-<%= link_to 'Editer', edit_photo_path(@photo) %> |
-<%= link_to 'Retour', @village ? village_photos_path(@village) : photos_path %>
+<%= render 'nav_show'%>

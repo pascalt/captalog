@@ -16,9 +16,9 @@ describe PhotosController do
       get :index
       response.should have_selector("title", :content => @titre_de_base + " | Photos actives de la base")
     end
-    it "devrait avoir un retour sur le menu" do
+    it "devrait avoir un lien sur le menu" do
       get :index
-      response.should have_selector("a", :href => menu_path, :content => "Retour")
+      response.should have_selector("a", :href => menu_path, :content => "Menu")
     end
     it "ne devrait pas avoir un lien pour la création d'une photo" do
       get :index
@@ -93,7 +93,7 @@ describe PhotosController do
     end
     it "devrait avoir un retour sur le village" do
       get :index, :village_id => @village
-      response.should have_selector("a", :href => village_path(@village), :content => "Retour")
+      response.should have_selector("a", :href => village_path(@village), :content => @village.nom)
     end
     it "devrait avoir un lien pour la création d'une photo" do
       get :index, :village_id => @village
@@ -155,14 +155,14 @@ describe PhotosController do
       response.should have_selector("title", :content =>  @titre_de_base + " | Photo " + @photo.prefix)
     end
     
-    it "devrait avoir un retour sur la liste des photos si vu depuis un village" do
+    it "devrait avoir un lien sur la liste des photos si vu depuis un village" do
       get :show, :id => @photo, :village_id => @village
-      response.should have_selector("a", :href => village_photos_path(@village), :content => "Retour")
+      response.should have_selector("a", :href => village_photos_path(@village), :content => "Photos")
     end
 
     it "devrait avoir un retour sur la liste de toutes les photos" do
       get :show, :id => @photo
-      response.should have_selector("a", :href => photos_path, :content => "Retour")
+      response.should have_selector("a", :href => photos_path, :content => "Photos")
     end
     
   end
@@ -189,14 +189,14 @@ describe PhotosController do
       response.should have_selector("title", :content =>  @titre_de_base + " | Editer photo : " + @photo.prefix)
     end
     
-    it "devrait avoir un retour sur la liste des photos si éditée depuis un village" do
+    it "devrait avoir un lien vers la liste des photos du village si éditée depuis un village" do
       get :edit, :id => @photo, :village_id => @village
-      response.should have_selector("a", :href => village_photos_path(@village), :content => "Retour")
+      response.should have_selector("a", :href => village_photos_path(@village), :content => "Photos")
     end
 
-    it "devrait avoir un retour sur la liste de toutes les photos" do
+    it "devrait avoir un lien vers la liste de toutes les photos" do
       get :edit, :id => @photo
-      response.should have_selector("a", :href => photos_path, :content => "Retour")
+      response.should have_selector("a", :href => photos_path, :content => "Photos")
     end
     
     it "devrait avoir un lien pour voir la photo depuis un village" do
@@ -246,7 +246,7 @@ describe PhotosController do
     
     it "devrait avoir un retour sur la liste des photos de ce village" do
       get :new, :village_id => @village
-      response.should have_selector("a", :href => village_photos_path(@village), :content => "Retour")
+      response.should have_selector("a", :href => village_photos_path(@village), :content => "Photos")
     end
     
     it ",avec absence de répertoires pour les photos, devrait rediriger vers l'initialisation des répertoires" do 
@@ -538,7 +538,7 @@ describe PhotosController do
     end
     it "devrait avoir un retour vers la liste des photos actives" do
       get :index_non_actives
-      response.should have_selector("a", :href => photos_path, :content => "Retour")
+      response.should have_selector("a", :href => photos_path, :content => "actives")
     end
     it "devrait, pour une photo, avoir un lien pour la supprimer" do
       @village = Factory(:village)
@@ -567,7 +567,7 @@ describe PhotosController do
     end
     it "devrait avoir un retour vers la liste des photos actives" do
       get :index_non_actives, :village_id => @village.id
-      response.should have_selector("a", :href => village_photos_path(@village), :content => "Retour")
+      response.should have_selector("a", :href => village_photos_path(@village), :content => "actives")
     end
     it "devrait, pour une photo, avoir un lien pour la supprimer" do
       @photo = Photo.create!(:url_originale => "exemple.jpg", :village_id => @village.id)
