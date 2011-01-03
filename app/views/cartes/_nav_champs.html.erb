@@ -1,0 +1,9 @@
+<%= link_to 'Menu', menu_path %> |
+<% if @carte.actif %>
+  <%= link_to 'Cartes', @village ? village_cartes_path(@village) : cartes_path %> |
+<%else%>
+ <%= link_to 'Cartes désactivées', @village ? index_non_actives_village_cartes_path(@carte.village) : index_non_actives_cartes_path%> |
+<%end%>
+<% unless @carte.new_record?%>
+  <%= link_to 'Voir', [@village, @carte]%>
+<% end %>

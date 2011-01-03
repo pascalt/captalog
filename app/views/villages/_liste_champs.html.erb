@@ -8,6 +8,7 @@
     <td><%= village.nc %></td>
 <%end%>
 <td><%= link_to 'Photos', village_photos_path(village) %></td>
+<td><%= link_to 'Cartes', village_cartes_path(village) %></td>
 <td><%= link_to 'Voir', village %></td>
 <td><%= link_to 'Editer', edit_village_path(village) %></td>
 <% if village.actif%>

@@ -1,0 +1,19 @@
+<%= render 'erreur'%>
+
+Charger une carte originale:
+<div class="field">
+<%= f.file_field :url_originale %>
+</div>
+<br />
+<div class="field">
+  <%= f.label :nom %><br />
+  <%= f.text_field :nom %>
+</div>
+<div class="field">
+  <%= f.label :info %><br />
+  <%= f.text_field :info %>
+</div>
+
+<%= f.hidden_field :village_id %>
+
+<%= f.hidden_field :actif %>

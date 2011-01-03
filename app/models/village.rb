@@ -4,6 +4,7 @@ class Village < ActiveRecord::Base
   
   belongs_to :departement
   has_many :photos, :dependent => :destroy
+  has_many :cartes, :dependent => :destroy
   
   validates :nom_sa, :presence => true, :uniqueness => true
   
@@ -73,13 +74,16 @@ class Village < ActiveRecord::Base
   
   def liste_des_repertoires
     
-    liste = [DIR_SUPPR, "#{DIR_VILLAGES}/#{DIR_VILLAGES_DESACTI}", "#{racine_village}/#{DIR_PHOTOS}", "#{racine_village}/#{DIR_CARTES}", 
+    liste = [DIR_SUPPR, DIR_SUPPR_CARTE, "#{DIR_VILLAGES}/#{DIR_VILLAGES_DESACTI}", "#{racine_village}/#{DIR_PHOTOS}", "#{racine_village}/#{DIR_CARTES}", 
              "#{racine_village}/#{DIR_PHOTOS}/#{DIR_PHOTOS_DESACTI}"]
   
     DIR_TYPE_PHOTO.each do |cle, rep| 
       liste << "#{racine_village}/#{DIR_PHOTOS}/#{rep}" << "#{racine_village}/#{DIR_PHOTOS}/#{DIR_PHOTOS_DESACTI}/#{rep}"
     end
       
+    DIR_TYPE_CARTE.each do |cle, rep| 
+      liste << "#{racine_village}/#{DIR_CARTES}/#{rep}" << "#{racine_village}/#{DIR_CARTES}/#{DIR_CARTES_DESACTI}/#{rep}"
+    end
   
     return liste
   

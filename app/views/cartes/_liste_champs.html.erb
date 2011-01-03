@@ -1,0 +1,8 @@
+<td><%= image_tag(carte.url_carte(:vig)) %></td>
+<td><%= carte.prefix %></td>
+<td><%= link_to 'Voir', [@village, carte] %></td>
+<td><%= link_to 'Editer', @village ? edit_village_carte_path(@village, carte) : edit_carte_path(carte) %></td>
+<td><%= link_to "#{carte.actif ? "Désactiver" : "Réactiver"}", @village ? active_bascule_village_carte_path(@village, carte) : active_bascule_carte_path(carte) %></td>
+<%if !carte.actif %>
+  <td><%= link_to 'Suppr.', [@village, carte], :confirm => "Etes-vous certain de vouloir supprimer la carte : #{carte.prefix}?", :method => :delete %></td>
+<%end%>

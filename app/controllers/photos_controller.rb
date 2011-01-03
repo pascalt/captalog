@@ -10,6 +10,12 @@ class PhotosController < ApplicationController
     
   end
 
+  def index_non_actives
+    @village = Village.find_by_id(params[:village_id])
+    @photos = @village ? @village.photos.non_actives : Photo.non_actives_de_villages_actifs 
+    @titre = @village ? "Photos désactivées pour : #{@village.nom}" : "Photos désactivées de la base"
+  end
+
   def show
     
     @photo = Photo.find(params[:id])
@@ -101,9 +107,4 @@ class PhotosController < ApplicationController
     
   end
   
-  def index_non_actives
-    @village = Village.find_by_id(params[:village_id])
-    @photos = @village ? @village.photos.non_actives : Photo.non_actives_de_villages_actifs 
-    @titre = @village ? "Photos désactivées pour : #{@village.nom}" : "Photos désactivées de la base"
-  end
 end

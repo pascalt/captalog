@@ -1,7 +1,20 @@
 # -*- encoding : utf-8 -*-
 Captalog::Application.routes.draw do
 
+  resources :cartes, :except => [:new, :create] do
+    collection do
+      get 'index_non_actives'
+    end
+    
+    member do
+      get 'active_bascule'
+    end
+    
+    
+  end
+
   resources :photos, :except => [:new, :create] do
+    
     collection do
       get 'index_non_actives'
     end
@@ -9,11 +22,21 @@ Captalog::Application.routes.draw do
     member do
       get 'active_bascule'
     end
+    
   end
 
   resources :villages do
     
     resources :photos do
+      member do
+        get 'active_bascule'
+      end
+      collection do
+        get 'index_non_actives'
+      end
+    end
+    
+    resources :cartes do
       member do
         get 'active_bascule'
       end

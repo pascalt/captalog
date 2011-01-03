@@ -10,7 +10,17 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101130203459) do
+ActiveRecord::Schema.define(:version => 20101221114231) do
+
+  create_table "cartes", :force => true do |t|
+    t.string   "nom"
+    t.string   "info"
+    t.integer  "village_id"
+    t.string   "url_originale"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "actif",         :default => true
+  end
 
   create_table "departements", :force => true do |t|
     t.integer  "region_id"

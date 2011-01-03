@@ -1,0 +1,13 @@
+<%= link_to 'Menu', menu_path %>
+
+<% if @village.blank?%>
+ | <%= link_to 'Villages', villages_path%>
+<%else%>
+    <%if @village.actif %>
+        | <%= link_to 'Villages', villages_path%>
+    <%else%>
+        | <%= link_to 'Villages désactivés', index_non_actifs_villages_path%>
+    <%end%>
+    | <%= link_to 'Village : ' + @village.nom, village_path(@village)%>
+<%end%>
+| <%= link_to 'Cartes actives', @village ? village_cartes_path(@village) : cartes_path%>

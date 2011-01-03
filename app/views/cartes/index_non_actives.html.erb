@@ -1,0 +1,15 @@
+<%= render 'nav_index_non_actives' %>
+<h1><%=@titre%></h1>
+
+<table>
+
+<% @cartes.each do |carte| %>
+  <tr>
+    <%= render 'liste_champs', :carte => carte %>
+  </tr>
+<% end %>
+</table>
+
+<br />
+<%= render 'nav_index_non_actives' %>
+

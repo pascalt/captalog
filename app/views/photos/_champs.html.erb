@@ -2,7 +2,6 @@
 
 <%unless @photo.fichier_photo_existe?(:def)%>
 Charger une photo originale:
-<%= "Originale :" +  url_originale if url_originale %>
   <div class="field">
   <%= f.file_field :url_originale %>
   </div>

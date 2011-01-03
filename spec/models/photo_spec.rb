@@ -13,11 +13,6 @@ describe Photo do
     photo_sans_url = Photo.new(@attr.merge(:url_originale => ""))
     photo_sans_url.should_not be_valid
   end
-  # it "doit avoir une url originale unique" do
-  #   Photo.create!(@attr)
-  #   photo_duplique = Photo.new(@attr)
-  #   photo_duplique.should_not be_valid
-  # end
   it "doit etre créé 'actif' par défaut" do
     photo = Photo.create!(@attr)
     photo.actif.should be_true
