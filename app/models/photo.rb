@@ -86,11 +86,13 @@ class Photo < ActiveRecord::Base
     
     if type_photo == :ori
       tmp_nom_original = Rails.env.test? ? url_originale : url_originale.original_filename
-      FileUtils.mv url_originale, fichier_photo(:ori)
+      nom_original = Rails.env.test? ? url_originale : url_originale.path 
+      FileUtils.mv nom_original, fichier_photo(:ori)
       self.url_originale = tmp_nom_original
     elsif type_photo == :def
       tmp_nom_definitive = Rails.env.test? ? url_definitive : url_definitive.original_filename
-      FileUtils.mv url_definitive, fichier_photo(:def)
+      nom_definitive = Rails.env.test? ? url_definitive : url_definitive.path 
+      FileUtils.mv nom_definitive, fichier_photo(:def)
       self.url_definitive = tmp_nom_definitive
     end
     

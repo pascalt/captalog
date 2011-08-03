@@ -55,11 +55,11 @@ class Carte < ActiveRecord::Base
   
 
   def fichier_carte(type_carte, carte_active = self.actif)
-    "#{DIR_VILLAGES}/#{DIR_VILLAGES_DESACTI + "/" if !village.actif}#{village.dir_nom}/#{DIR_CARTES}/#{DIR_CARTES_DESACTI + "/" if !carte_active}#{DIR_TYPE_CARTE[type_carte]}/#{prefix}#{FIC_EXT[type_carte]}.jpg"
+    "#{DIR_VILLAGES}/#{DIR_VILLAGES_DESACTI + "/" if !village.actif}#{village.dir_nom}/#{DIR_CARTES}/#{DIR_CARTES_DESACTI + "/" if !carte_active}#{DIR_TYPE_CARTE[type_carte]}/#{prefix}#{FIC_EXT[type_carte]}#{EXTENTION[type_carte]}"
   end
   
   def url_carte(type_carte)
-    "#{URL_VILLAGES}/#{DIR_VILLAGES_DESACTI + "/" if !village.actif}#{village.dir_nom}/#{DIR_CARTES}/#{DIR_CARTES_DESACTI + "/" if !actif}#{DIR_TYPE_CARTE[type_carte]}/#{prefix}#{FIC_EXT[type_carte]}.jpg"
+    "#{URL_VILLAGES}/#{DIR_VILLAGES_DESACTI + "/" if !village.actif}#{village.dir_nom}/#{DIR_CARTES}/#{DIR_CARTES_DESACTI + "/" if !actif}#{DIR_TYPE_CARTE[type_carte]}/#{prefix}#{FIC_EXT[type_carte]}#{EXTENTION[type_carte]}"
   end
   
   def fichier_carte_existe?(type_carte)
@@ -68,17 +68,29 @@ class Carte < ActiveRecord::Base
   
   def fabrique_fichier_carte(vers_type_carte)
     
-    image = Magick::Image::read(fichier_carte(:ori)).first
+    # image = Magick::Image::read(fichier_carte(:ori)).first
+    # 
+    # image.change_geometry!(LARGEUR[vers_type_carte]) { |cols, rows, img| img.resize!(cols, rows)}
+    # image.write fichier_carte(vers_type_carte)
+
+    image = Magick::Image::read(fichier_carte(:ori))
+     if image[0].colorspace == Magick::CMYKColorspace
+        image[0].colorspace = Magick::RGBColorspace
+        image[0] =  image[0].negate
+     end    
     
-    image.change_geometry!(LARGEUR[vers_type_carte]) { |cols, rows, img| img.resize!(cols, rows)}
-    image.write fichier_carte(vers_type_carte)
+    image[0].change_geometry!(LARGEUR[vers_type_carte]) { |cols, rows, img| img.resize!(cols, rows)}
+    image[0].write fichier_carte(vers_type_carte) { self.density = "300x300", self.quality = 100 }
+
     
   end
   
   def cree_fichier_carte
     
     tmp_nom_original = Rails.env.test? ? url_originale : url_originale.original_filename
-    FileUtils.mv url_originale, fichier_carte(:ori)
+    nom_original = Rails.env.test? ? url_originale : url_originale.path
+       
+    FileUtils.mv nom_original, fichier_carte(:ori)
     self.url_originale = tmp_nom_original
     
     self.save

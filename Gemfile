@@ -1,15 +1,16 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.0.1'
+gem 'rails','3.0.1'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
-gem 'mysql2'
+gem 'mysql2', '< 0.2.7'
 gem 'magic_encoding'
 gem 'annotate'
-gem 'fileutils'
+gem 'fileutils', '0.3'
 gem 'rmagick'
+gem 'rake', '0.9.2'
 
 group :development do
   gem 'rspec-rails', '2.0.1'

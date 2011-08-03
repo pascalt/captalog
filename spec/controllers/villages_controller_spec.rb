@@ -146,7 +146,7 @@ describe VillagesController do
       before(:each) do
         @attr = { :nom_sa => "Village Zouzou", :article => "Le", :type_village => "campagne", 
                   :nc => "villagezouzou", :latitude => "0.12", :longitude => "0.14", :rue => "33bis rue pluf", :ville => "Saint-Charmant",
-                  :cp => "30987", :actif => true, :departement_id => 1, :date_entree => "1998-07-12 00:00:00 UTC"}
+                  :cp => "30987", :actif => true, :departement_id => 1, :date_entree => "Sun Jul 12 00:00:00 UTC 1998"}
       end
       
       it "devrait changer les attributs du village" do
@@ -199,7 +199,7 @@ describe VillagesController do
         Dir.mkdir(DIR_VILLAGES)
         @attr = { :nom_sa => "Village Zouzou", :article => "Le", :type_village => "campagne", 
                   :nc => "villagezouzou", :latitude => "0.12", :longitude => "0.14", :rue => "33bis rue pluf", :ville => "Saint-Charmant",
-                  :cp => "30987", :actif => true, :departement_id => 1, :date_entree => "1998-07-12 00:00:00 UTC"}
+                  :cp => "30987", :actif => true, :departement_id => 1, :date_entree => "Sun Jul 12 00:00:00 UTC 1998"}
       end
 
       it "devrait avoir les attributs passés" do
@@ -310,7 +310,7 @@ describe VillagesController do
         put :update_desactive, :id => @village, :village => @attr
         @village.reload
         @village.actif.should be_false
-        @village.date_sortie.strftime('%d/%m/%Y').should ==  @attr[:date_sortie]
+        @village.date_sortie.strftime('%m/%d/%Y').should ==  @attr[:date_sortie]
       end
 
       it "devrait etre redirigé sur le 'show'" do

@@ -13,3 +13,4 @@ DIR_CARTES_DESACTI    = '_desactivees'
 FIC_EXT_CARTE         = {:ori => '_ori', :vig => '_vig', :web => '_web'}
 DIR_SUPPR_CARTE       = "#{Rails.root.to_s}/public/#{"test/" if Rails.env.test?}_suppr_carte"
 LARGEUR               = {:vig => '100', :web => '320'}
+EXTENTION             = {:ori => '.pdf', :vig => '.jpg', :web => '.jpg'}
