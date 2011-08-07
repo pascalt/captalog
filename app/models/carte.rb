@@ -68,19 +68,14 @@ class Carte < ActiveRecord::Base
   
   def fabrique_fichier_carte(vers_type_carte)
     
-    # image = Magick::Image::read(fichier_carte(:ori)).first
-    # 
-    # image.change_geometry!(LARGEUR[vers_type_carte]) { |cols, rows, img| img.resize!(cols, rows)}
-    # image.write fichier_carte(vers_type_carte)
-
-    image = Magick::Image::read(fichier_carte(:ori))
+    image = Magick::ImageList.new fichier_carte(:ori)
      if image[0].colorspace == Magick::CMYKColorspace
         image[0].colorspace = Magick::RGBColorspace
         image[0] =  image[0].negate
      end    
     
     image[0].change_geometry!(LARGEUR[vers_type_carte]) { |cols, rows, img| img.resize!(cols, rows)}
-    image[0].write fichier_carte(vers_type_carte) { self.density = "300x300", self.quality = 100 }
+    image[0].write fichier_carte(vers_type_carte) #{ self.density = "3000x3000" }
 
     
   end

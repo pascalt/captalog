@@ -8,7 +8,9 @@
       | <%= link_to 'Villages désactivés', index_non_actifs_villages_path%>
   <%end%>
   | <%= link_to 'Village : ' + @village.nom, village_path(@village)%>
-  | <%= link_to 'Nouvelle photo', new_village_photo_path(@village)%>
+  <%if @village.actif %>
+    | <%= link_to 'Nouvelle photo', new_village_photo_path(@village)%>
+  <%end%>
 <%end%>
 
 

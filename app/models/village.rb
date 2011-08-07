@@ -124,15 +124,24 @@ class Village < ActiveRecord::Base
   
   def deplace_fichier_village_desactive(sens=nil)
     
-    if sens.nil?
-      source      = "#{DIR_VILLAGES}/#{dir_nom}"
-      destination = "#{DIR_VILLAGES}/#{DIR_VILLAGES_DESACTI}"
-    else
-      source      = "#{DIR_VILLAGES}/#{DIR_VILLAGES_DESACTI}/#{dir_nom}"
-      destination = "#{DIR_VILLAGES}"
-    end
-    FileUtils.cp_r source, destination
-    FileUtils.rm_r source
+    if repertoires_existent?
+    
+      if sens.nil?
+        source      = "#{DIR_VILLAGES}/#{dir_nom}"
+        destination = "#{DIR_VILLAGES}/#{DIR_VILLAGES_DESACTI}"
+      else
+        source      = "#{DIR_VILLAGES}/#{DIR_VILLAGES_DESACTI}/#{dir_nom}"
+        destination = "#{DIR_VILLAGES}"
+      end
+    
+      if File.directory?(source) && File.directory?(destination)
+        FileUtils.cp_r source, destination
+        FileUtils.rm_r source
+      end
+      
+   end
+    
+    
   end
   
 
